@@ -20,6 +20,8 @@ proj.linux/
 proj.tizen/
 proj.win10/
 proj.win32/
+*.json
+*.txt
 
 # Build results
 [Dd]ebug/
