@@ -17,12 +17,34 @@ public:
 
 	CREATE_FUNC(FightMode);
 
+	void player1AttackByHand(Ref* pSender);
+	void FightMode::player1AttackByLeg(Ref* pSender);
+	void FightMode::player1MoveAnimation(Ref* pSender);
+	void FightMode::player1WouldDead(Ref* pSender);
+	void FightMode::player1WouldDefense(Ref* pSender);
+	void FightMode::player1AttackByQigong(Ref* pSender);
+
+
 private:
-	Sprite* player1;
+	Sprite * player1;
+	Vector<SpriteFrame*> player1Idle;
+	Vector<SpriteFrame*> player1AttackHand;
+	Vector<SpriteFrame*> player1AttackLeg;
+	Vector<SpriteFrame*> player1AttackQigong;
+	Vector<SpriteFrame*> player1Move;
+	Vector<SpriteFrame*> player1Dead;
+	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
+	Vector<SpriteFrame*> player1Defense;
 
-	Sprite* player2;
-
-	Layer* enermyLayer;
+	Sprite * player2;
+	Vector<SpriteFrame*> player2Idle;
+	Vector<SpriteFrame*> player2AttackHand;
+	Vector<SpriteFrame*> player2AttackLeg;
+	Vector<SpriteFrame*> player2AttackQigong;
+	Vector<SpriteFrame*> player2Move;
+	Vector<SpriteFrame*> player2Dead;
+	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
+	Vector<SpriteFrame*> player2Defense;
 
 };
 
