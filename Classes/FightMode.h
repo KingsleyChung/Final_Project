@@ -10,7 +10,7 @@ public:
 	static cocos2d::Scene* createScene();
 
 	virtual bool init();
-
+	void initAnimation();
 	CREATE_FUNC(FightMode);
 
 	void player1AttackByHand(Ref* pSender);
@@ -20,6 +20,12 @@ public:
 	void FightMode::player1WouldDefense(Ref* pSender);
 	void FightMode::player1AttackByQigong(Ref* pSender);
 
+	void player2AttackByHand(Ref* pSender);
+	void FightMode::player2AttackByLeg(Ref* pSender);
+	void FightMode::player2MoveAnimation(Ref* pSender);
+	void FightMode::player2WouldDead(Ref* pSender);
+	void FightMode::player2WouldDefense(Ref* pSender);
+	void FightMode::player2AttackByQigong(Ref* pSender);
 
 private:
 	//»­Ãæ¸üÐÂ
@@ -60,6 +66,8 @@ private:
 	void onKeyPressed1(EventKeyboard::KeyCode code, Event* event);
 	void onKeyReleased1(EventKeyboard::KeyCode code, Event *event);
 	void addKeyboardListener();
+	Size visibleSize;
+	Vec2 origin;
 };
 
 #endif // __FIGHTMODE_H__
