@@ -26,9 +26,11 @@ bool FightMode::init()
 		return false;
 	}
 	//变量初始化
-	player1IsMove = false;
+	player1ADIsMove = false;
+	player1WSIsMove = false;
 	lastkey1 = 'D';
-	player2IsMove = false;
+	player2ADIsMove = false;
+	player2WSIsMove = false;
 	lastkey2 = 'A';
 
 	visibleSize = Director::getInstance()->getVisibleSize();
@@ -44,7 +46,8 @@ bool FightMode::init()
 	this->addChild(bg, 0);
 
 	initAnimation();
-
+	addKeyboardListener();
+	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
 	return true;
 }
 //初始化player1和player2的所有动画
@@ -216,11 +219,11 @@ void FightMode::player1AttackByLeg(Ref* pSender) {
 	}
 }
 
-void FightMode::player1MoveAnimation(Ref* pSender) {
+void FightMode::player1MoveAnimation() {
 	if (player1->getNumberOfRunningActions() == 0) {
-		auto animation1 = Animation::createWithSpriteFrames(player1Move, 0.5f);
+		auto animation1 = Animation::createWithSpriteFrames(player1Move, 0.1f);
 		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.5f);
+		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
 		auto animate2 = Animate::create(animation2);
 		player1->runAction(Sequence::create(animate1, animate2, NULL));
 	}
@@ -338,26 +341,35 @@ void FightMode::player2AttackByQigong(Ref* pSender) {
 }
 
 void FightMode::update(float f) {
-	if (player1IsMove) {
-		this->player1Movement(player1Movekey);
+	if (player1ADIsMove || player1WSIsMove) {
+		this->player1Movement(player1ADMovekey, player1WSMovekey);
+	}
+	if (player2ADIsMove || player2WSIsMove) {
+		this->player2Movement(player2ADMovekey, player2WSMovekey);
 	}
 }
 
 //人物移动函数
 void FightMode::addKeyboardListener() {
-	auto keyboardListener = EventListenerKeyboard::create();
-	keyboardListener->onKeyPressed = CC_CALLBACK_2(FightMode::onKeyPressed1, this);
-	keyboardListener->onKeyReleased = CC_CALLBACK_2(FightMode::onKeyReleased1, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, player1);
+	auto keyboardListener1 = EventListenerKeyboard::create();
+	keyboardListener1->onKeyPressed = CC_CALLBACK_2(FightMode::onKeyPressed1, this);
+	keyboardListener1->onKeyReleased = CC_CALLBACK_2(FightMode::onKeyReleased1, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener1, player1);
+
+	auto keyboardListener2 = EventListenerKeyboard::create();
+	keyboardListener2->onKeyPressed = CC_CALLBACK_2(FightMode::onKeyPressed2, this);
+	keyboardListener2->onKeyReleased = CC_CALLBACK_2(FightMode::onKeyReleased2, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener2, player2);
 }
+
 
 void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 	switch (code)
 	{
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
 	case cocos2d::EventKeyboard::KeyCode::KEY_A:
-		player1IsMove = true;
-		player1Movekey = 'A';
+		player1ADIsMove = true;
+		player1ADMovekey = 'A';
 		if (lastkey1 == 'D') {
 			player1->setFlippedX(true);
 		}
@@ -365,8 +377,8 @@ void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 		break;
 	case cocos2d::EventKeyboard::KeyCode::KEY_D:
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
-		player1IsMove = true;
-		player1Movekey = 'D';
+		player1ADIsMove = true;
+		player1ADMovekey = 'D';
 		if (lastkey1 == 'A') {
 			player1->setFlippedX(false);
 		}
@@ -374,13 +386,13 @@ void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 		break;
 	case cocos2d::EventKeyboard::KeyCode::KEY_W:
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
-		player1IsMove = true;
-		player1Movekey = 'W';
+		player1WSIsMove = true;
+		player1WSMovekey = 'W';
 		break;
 	case cocos2d::EventKeyboard::KeyCode::KEY_S:
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
-		player1IsMove = true;
-		player1Movekey = 'S';
+		player1WSIsMove = true;
+		player1WSMovekey = 'S';
 		break;
 	}
 }
@@ -391,49 +403,159 @@ void FightMode::onKeyReleased1(EventKeyboard::KeyCode code, Event *event) {
 	case cocos2d::EventKeyboard::KeyCode::KEY_A:
 	case cocos2d::EventKeyboard::KeyCode::KEY_D:
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
+		player1ADIsMove = false;
+		break;
 	case cocos2d::EventKeyboard::KeyCode::KEY_W:
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
 	case cocos2d::EventKeyboard::KeyCode::KEY_S:
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
-		player1IsMove = false;
+		player1WSIsMove = false;
 		break;
 	}
 }
+void FightMode::player1Movement(char ADkey, char WSkey) {
+	float x_move = 0;
+	float y_move = 0;
+	if (player1ADIsMove) {
+		switch (ADkey)
+		{
+		case 'A':
+			if (player1->getPositionX() - 35 >= 30) {
+				x_move = -35;
+			}
+			else {
+				x_move = 30 - player1->getPositionX();
+			}
+			break;
+		case 'D':
+			if (player1->getPositionX() + 35 <= visibleSize.width - 30) {
+				x_move = 35;
+			}
+			else {
+				x_move = visibleSize.width - 30 - player1->getPositionX();
+			}
+			break;
+		}
+	}
+	if (player1WSIsMove) {
+		switch (WSkey) {
+		case 'W':
+			if (player1->getPositionY() + 30 <= 280) {
+				y_move = 30;
+			}
+			else {
+				y_move = 280 - player1->getPositionY();
+			}
+			break;
+		case 'S':
+			if (player1->getPositionY() - 30 >= 80) {
+				y_move = -30;
+			}
+			else {
+				y_move = 80 - player1->getPositionY();
+			}
+			break;
+		}
+	}
+	auto move = MoveBy::create(0.1f, Vec2(x_move, y_move));
+	auto animation1 = Animation::createWithSpriteFrames(player1Move, 0.1f);
+	auto animate1 = Animate::create(animation1);
+	auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
+	auto animate2 = Animate::create(animation2);
+	player1->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
+}
 
-void FightMode::player1Movement(char key) {
-	switch (key)
+
+void FightMode::onKeyPressed2(EventKeyboard::KeyCode code, Event* event) {
+	switch (code)
 	{
-	case 'A':
-		if (player1->getPositionX() - 15 >= 30) {
-			player1->setPosition(player1->getPositionX() - 15, player1->getPositionY());
+	case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		player2ADIsMove = true;
+		player2ADMovekey = 'A';
+		if (lastkey2 == 'D') {
+			player2->setFlippedX(true);
 		}
-		else {
-			player1->setPosition(30, player1->getPositionY());
-		}
+		lastkey2 = 'A';
 		break;
-	case 'D':
-		if (player1->getPositionX() + 15 <=  visibleSize.width - 30) {
-			player1->setPosition(player1->getPositionX() + 15, player1->getPositionY());
+	case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		player2ADIsMove = true;
+		player2ADMovekey = 'D';
+		if (lastkey2 == 'A') {
+			player2->setFlippedX(false);
 		}
-		else {
-			player1->setPosition(visibleSize.width - 30, player1->getPositionY());
-		}
+		lastkey2 = 'D';
 		break;
-	case 'W':
-		if (player1->getPositionY() + 10 <= 280) {
-			player1->setPosition(player1->getPositionX(), player1->getPositionY() + 10);
-		}
-		else {
-			player1->setPosition(player1->getPositionX(), 280);
-		}
+	case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
+		player2WSIsMove = true;
+		player2WSMovekey = 'W';
 		break;
-	case 'S':
-		if (player1->getPositionY() - 10 >= 80) {
-			player1->setPosition(player1->getPositionX(), player1->getPositionY() - 10);
-		}
-		else {
-			player1->setPosition(player1->getPositionX(), 70);
-		}
+	case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		player2WSIsMove = true;
+		player2WSMovekey = 'S';
 		break;
 	}
+}
+void FightMode::onKeyReleased2(EventKeyboard::KeyCode code, Event *event) {
+	switch (code)
+	{
+	case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+	case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		player2ADIsMove = false;
+		break;
+	case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
+	case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		player2WSIsMove = false;
+		break;
+	}
+}
+void FightMode::player2Movement(char ADkey, char WSkey) {
+	float x_move = 0;
+	float y_move = 0;
+	if (player2ADIsMove) {
+		switch (ADkey)
+		{
+		case 'A':
+			if (player2->getPositionX() - 35 >= 30) {
+				x_move = -35;
+			}
+			else {
+				x_move = 30 - player2->getPositionX();
+			}
+			break;
+		case 'D':
+			if (player2->getPositionX() + 35 <= visibleSize.width - 30) {
+				x_move = 35;
+			}
+			else {
+				x_move = visibleSize.width - 30 - player2->getPositionX();
+			}
+			break;
+		}
+	}
+	if (player2WSIsMove) {
+		switch (WSkey) {
+		case 'W':
+			if (player2->getPositionY() + 30 <= 280) {
+				y_move = 30;
+			}
+			else {
+				y_move = 280 - player2->getPositionY();
+			}
+			break;
+		case 'S':
+			if (player2->getPositionY() - 30 >= 80) {
+				y_move = -30;
+			}
+			else {
+				y_move = 80 - player2->getPositionY();
+			}
+			break;
+		}
+	}
+	auto move = MoveBy::create(0.1f, Vec2(x_move, y_move));
+	auto animation1 = Animation::createWithSpriteFrames(player2Move, 0.5f);
+	auto animate1 = Animate::create(animation1);
+	auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.5f);
+	auto animate2 = Animate::create(animation2);
+	player2->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
 }

@@ -15,7 +15,7 @@ public:
 
 	void player1AttackByHand(Ref* pSender);
 	void FightMode::player1AttackByLeg(Ref* pSender);
-	void FightMode::player1MoveAnimation(Ref* pSender);
+	void FightMode::player1MoveAnimation();
 	void FightMode::player1WouldDead(Ref* pSender);
 	void FightMode::player1WouldDefense(Ref* pSender);
 	void FightMode::player1AttackByQigong(Ref* pSender);
@@ -55,18 +55,25 @@ private:
 	Vector<SpriteFrame*> player2Defense;
 
 	//人物移动相关变量
-	char player1Movekey;
+	char player1ADMovekey;
+	char player1WSMovekey;
 	char lastkey1;
-	void player1Movement(char key);
-	char player2MoveKey;
-	char lastkey2;
-	void player2Movemwnt(char key);
-	bool player1IsMove;
-	bool player2IsMove;
+	bool player1ADIsMove;
+	bool player1WSIsMove;
+	void player1Movement(char ADkey, char WSkey);
 	void onKeyPressed1(EventKeyboard::KeyCode code, Event* event);
 	void onKeyReleased1(EventKeyboard::KeyCode code, Event *event);
+
+	char player2ADMovekey;
+	char player2WSMovekey;
+	char lastkey2;
+	bool player2ADIsMove;
+	bool player2WSIsMove;
+	void player2Movement(char ADkey, char WSkey);
+	void onKeyPressed2(EventKeyboard::KeyCode code, Event* event);
+	void onKeyReleased2(EventKeyboard::KeyCode code, Event *event);
+
 	void addKeyboardListener();
-	Size visibleSize;
 	Vec2 origin;
 };
 
