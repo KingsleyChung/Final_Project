@@ -11,10 +11,7 @@ public:
 
 	virtual bool init();
 
-	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
-
-	virtual void shootCallback(Ref* pSender);
-
+	void initAnimation();
 	CREATE_FUNC(FightMode);
 
 	void player1AttackByHand(Ref* pSender);
@@ -24,6 +21,12 @@ public:
 	void FightMode::player1WouldDefense(Ref* pSender);
 	void FightMode::player1AttackByQigong(Ref* pSender);
 
+	void player2AttackByHand(Ref* pSender);
+	void FightMode::player2AttackByLeg(Ref* pSender);
+	void FightMode::player2MoveAnimation(Ref* pSender);
+	void FightMode::player2WouldDead(Ref* pSender);
+	void FightMode::player2WouldDefense(Ref* pSender);
+	void FightMode::player2AttackByQigong(Ref* pSender);
 
 private:
 	Sprite * player1;
@@ -46,6 +49,8 @@ private:
 	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player2Defense;
 
+	Size visibleSize;
+	Vec2 origin;
 };
 
 #endif // __FIGHTMODE_H__
