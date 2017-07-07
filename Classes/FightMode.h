@@ -19,6 +19,7 @@ public:
 	void FightMode::player1WouldDead(Ref* pSender);
 	void FightMode::player1WouldDefense(Ref* pSender);
 	void FightMode::player1AttackByQigong(Ref* pSender);
+	void player1QiGong();
 
 	void player2AttackByHand(Ref* pSender);
 	void FightMode::player2AttackByLeg(Ref* pSender);
@@ -26,6 +27,8 @@ public:
 	void FightMode::player2WouldDead(Ref* pSender);
 	void FightMode::player2WouldDefense(Ref* pSender);
 	void FightMode::player2AttackByQigong(Ref* pSender);
+	void FightMode::player2QiGong();
+
 
 private:
 	//»­Ãæ¸üÐÂ

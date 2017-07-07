@@ -50,6 +50,7 @@ bool FightMode::init()
 	initAnimation();
 	addKeyboardListener();
 	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
+
 	return true;
 }
 //初始化player1和player2的所有动画
@@ -253,25 +254,45 @@ void FightMode::player1WouldDefense(Ref* pSender) {
 
 //player1运行气功动画并产生气功精灵移动
 void FightMode::player1AttackByQigong(Ref* pSender) {
-
+	auto callBack = CallFunc::create(CC_CALLBACK_0(FightMode::player1QiGong, this));
 	if (player1->getNumberOfRunningActions() == 0) {
-		auto animation1 = Animation::createWithSpriteFrames(player1AttackQigong, 0.25f);
+		auto animation1 = Animation::createWithSpriteFrames(player1AttackQigong, 0.1f);
 		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.25f);
+		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
 		auto animate2 = Animate::create(animation2);
-		player1->runAction(Sequence::create(animate1, animate2, NULL));
-		auto texture = Director::getInstance()->getTextureCache()->addImage("player1/firzen_chasei.png");
-		auto frame = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 78, 70)));
-		auto qigong = Sprite::createWithSpriteFrame(frame);
-		qigong->setPosition(Vec2(player1->getPositionX() + 36, player1->getPositionY()));
-		this->addChild(qigong, 2);
-		auto animation3 = Animation::createWithSpriteFrames(player1Qigong, 0.3f);
+		Vector<SpriteFrame*> afterSendAnimation;
+		afterSendAnimation.pushBack(player1AttackQigong.at(2));
+		auto animation3 = Animation::createWithSpriteFrames(afterSendAnimation, 0.5f);
 		auto animate3 = Animate::create(animation3);
-		auto moveBy = MoveBy::create(1.2, Vec2(600, 0));
-		auto spawn = Spawn::createWithTwoActions(animate3, moveBy);
-		auto fadeout = FadeOut::create(0.01f);
-		qigong->runAction(Sequence::create(spawn, fadeout, NULL));
+		player1->runAction(Sequence::create(animate1, callBack, animate3, animate2, NULL));
 	}
+}
+
+void FightMode::player1QiGong() {
+	auto texture = Director::getInstance()->getTextureCache()->addImage("player1/firzen_chasei.png");
+	auto frame = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 78, 70)));
+	auto qigong = Sprite::createWithSpriteFrame(frame);
+	qigong->setPosition(Vec2(player1->getPositionX() + 36, player1->getPositionY()));
+	if (lastkey1 == 'A')
+		qigong->setPosition(Vec2(player1->getPositionX() - 36, player1->getPositionY()));
+	else
+		qigong->setPosition(Vec2(player1->getPositionX() + 36, player1->getPositionY()));
+	//设置缩放比例
+	Size qigongSize = qigong->getContentSize();
+	float scaleX = visibleSize.width * 0.126 / qigongSize.width;
+	qigong->setScale(scaleX, scaleX);
+	this->addChild(qigong, 2);
+	auto animation3 = Animation::createWithSpriteFrames(player1Qigong, 0.15f);
+	auto animate3 = Animate::create(animation3);
+	auto moveBy = MoveBy::create(0.8, Vec2(600, 0));
+	if (lastkey1 == 'A')
+		moveBy = MoveBy::create(0.8, Vec2(-600, 0));
+	else
+		moveBy = MoveBy::create(0.8, Vec2(600, 0));
+	auto spawn = Spawn::createWithTwoActions(animate3, moveBy);
+	auto fadeout = FadeOut::create(0.01f);
+	qigong->runAction(Sequence::create(spawn, fadeout, NULL));
+
 }
 
 void FightMode::player2AttackByHand(Ref* pSender) {
@@ -322,24 +343,47 @@ void FightMode::player2WouldDefense(Ref* pSender) {
 
 //player2运行气功动画并产生气功精灵移动
 void FightMode::player2AttackByQigong(Ref* pSender) {
+	auto callBack = CallFunc::create(CC_CALLBACK_0(FightMode::player2QiGong, this));
 	if (player2->getNumberOfRunningActions() == 0) {
-		auto animation1 = Animation::createWithSpriteFrames(player2AttackQigong, 0.25f);
+		auto animation1 = Animation::createWithSpriteFrames(player2AttackQigong, 0.1f);
 		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.25f);
+		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
 		auto animate2 = Animate::create(animation2);
-		player2->runAction(Sequence::create(animate1, animate2, NULL));
-		auto texture = Director::getInstance()->getTextureCache()->addImage("player2/woody_ball.png");
-		auto frame = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 162, 80, 81)));
-		auto qigong = Sprite::createWithSpriteFrame(frame);
-		qigong->setPosition(Vec2(player2->getPositionX() + 36, player2->getPositionY()));
-		this->addChild(qigong, 2);
-		auto animation3 = Animation::createWithSpriteFrames(player2Qigong, 0.3f);
+		Vector<SpriteFrame*> afterSendAnimation;
+		afterSendAnimation.pushBack(player2AttackQigong.at(8));
+		auto animation3 = Animation::createWithSpriteFrames(afterSendAnimation, 0.3f);
 		auto animate3 = Animate::create(animation3);
-		auto moveBy = MoveBy::create(1.2, Vec2(600, 0));
-		auto spawn = Spawn::createWithTwoActions(animate3, moveBy);
-		auto fadeout = FadeOut::create(0.01f);
-		qigong->runAction(Sequence::create(spawn, fadeout, NULL));
+		player2->runAction(Sequence::create(animate1, callBack, animate3, animate2, NULL));
 	}
+}
+void FightMode::player2QiGong() {
+	auto texture = Director::getInstance()->getTextureCache()->addImage("player2/woody_ball.png");
+	auto frame = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 162, 80, 81)));
+	auto qigong = Sprite::createWithSpriteFrame(frame);
+	qigong->setPosition(Vec2(player2->getPositionX() + 36, player2->getPositionY()));
+	if (lastkey2 == 'A') {
+		qigong->setPosition(Vec2(player2->getPositionX() - 36, player2->getPositionY()));
+		qigong->setFlippedX(true);
+	}
+	else {
+		qigong->setPosition(Vec2(player2->getPositionX() + 36, player2->getPositionY()));
+		qigong->setFlippedX(false);
+	}
+	//设置缩放比例
+	Size qigongSize = qigong->getContentSize();
+	float scaleX = visibleSize.width * 0.126 / qigongSize.width;
+	qigong->setScale(scaleX, scaleX);
+	this->addChild(qigong, 2);
+	auto animation3 = Animation::createWithSpriteFrames(player2Qigong, 0.3f);
+	auto animate3 = Animate::create(animation3);
+	auto moveBy = MoveBy::create(1.2, Vec2(600, 0));
+	if (lastkey2 == 'A')
+		moveBy = MoveBy::create(1.2, Vec2(-600, 0));
+	else
+		moveBy = MoveBy::create(1.2, Vec2(600, 0));
+	auto spawn = Spawn::createWithTwoActions(animate3, moveBy);
+	auto fadeout = FadeOut::create(0.01f);
+	qigong->runAction(Sequence::create(spawn, fadeout, NULL));
 }
 
 void FightMode::update(float f) {
