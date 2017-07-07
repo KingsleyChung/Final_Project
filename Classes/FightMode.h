@@ -11,10 +11,6 @@ public:
 
 	virtual bool init();
 
-	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
-
-	virtual void shootCallback(Ref* pSender);
-
 	CREATE_FUNC(FightMode);
 
 	void player1AttackByHand(Ref* pSender);
@@ -26,6 +22,11 @@ public:
 
 
 private:
+	//画面更新
+	Size visibleSize;
+	void update(float f);
+
+	//palyer1动画
 	Sprite * player1;
 	Vector<SpriteFrame*> player1Idle;
 	Vector<SpriteFrame*> player1AttackHand;
@@ -36,6 +37,7 @@ private:
 	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player1Defense;
 
+	//palyer2动画
 	Sprite * player2;
 	Vector<SpriteFrame*> player2Idle;
 	Vector<SpriteFrame*> player2AttackHand;
@@ -46,6 +48,18 @@ private:
 	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player2Defense;
 
+	//人物移动相关变量
+	char player1Movekey;
+	char lastkey1;
+	void player1Movement(char key);
+	char player2MoveKey;
+	char lastkey2;
+	void player2Movemwnt(char key);
+	bool player1IsMove;
+	bool player2IsMove;
+	void onKeyPressed1(EventKeyboard::KeyCode code, Event* event);
+	void onKeyReleased1(EventKeyboard::KeyCode code, Event *event);
+	void addKeyboardListener();
 };
 
 #endif // __FIGHTMODE_H__

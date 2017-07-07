@@ -25,14 +25,13 @@ bool FightMode::init()
 	{
 		return false;
 	}
+	//变量初始化
+	player1IsMove = false;
+	lastkey1 = 'D';
+	player2IsMove = false;
+	lastkey2 = 'A';
 
-	//add touch listener
-	EventListenerTouchOneByOne* listener = EventListenerTouchOneByOne::create();
-	listener->setSwallowTouches(true);
-	listener->onTouchBegan = CC_CALLBACK_2(FightMode::onTouchBegan, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
-
-	Size visibleSize = Director::getInstance()->getVisibleSize();
+	visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	auto bg = Sprite::create("FightBackground.JPG");
@@ -43,7 +42,6 @@ bool FightMode::init()
 	bg->setScaleX(visibleSize.height / bgy);
 	bg->setScaleY(visibleSize.height / bgy);
 	this->addChild(bg, 0);
-
 	//创建一张玩家1的贴图
 	auto texture1 = Director::getInstance()->getTextureCache()->addImage("player1/firzen_0.png");
 	//从贴图中以像素单位切割，创建关键帧
@@ -68,12 +66,16 @@ bool FightMode::init()
 	//使用第一帧创建精灵
 	player2 = Sprite::createWithSpriteFrame(frame2);
 	player2->setPosition(Vec2(3 * visibleSize.width / 4 + origin.x, origin.y + player2->getContentSize().height + 30));
+	player2->setFlippedX(true);
 	//设置缩放比例
 	Size player2Size = player2->getContentSize();
 	float scale2X = visibleSize.width * 0.1 / player2Size.width;
 	player2->setScale(scale2X, scale2X);
 	this->addChild(player2, 2);
 
+
+	addKeyboardListener();
+	schedule(schedule_selector(FightMode::update), 0.04f, kRepeatForever, 0);
 	// player2静态动画
 	player2Idle.reserve(1);
 	player2Idle.pushBack(frame2);
@@ -135,16 +137,6 @@ bool FightMode::init()
 	}
 
 	return true;
-}
-
-bool FightMode::onTouchBegan(Touch *touch, Event *unused_event) {
-
-	return true;
-}
-
-void FightMode::shootCallback(Ref* pSender)
-{
-
 }
 
 void FightMode::player1AttackByHand(Ref* pSender) {
@@ -215,4 +207,105 @@ void FightMode::player1AttackByQigong(Ref* pSender) {
 	auto animation3 = Animation::createWithSpriteFrames(player1Qigong, 0.5f);
 	auto animate3 = Animate::create(animation3);
 	qigong->runAction(Sequence::create(animate3, NULL));
+}
+
+void FightMode::update(float f) {
+	if (player1IsMove) {
+		this->player1Movement(player1Movekey);
+	}
+}
+
+//人物移动函数
+void FightMode::addKeyboardListener() {
+	auto keyboardListener = EventListenerKeyboard::create();
+	keyboardListener->onKeyPressed = CC_CALLBACK_2(FightMode::onKeyPressed1, this);
+	keyboardListener->onKeyReleased = CC_CALLBACK_2(FightMode::onKeyReleased1, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, player1);
+}
+
+void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
+	switch (code)
+	{
+	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
+	case cocos2d::EventKeyboard::KeyCode::KEY_A:
+		player1IsMove = true;
+		player1Movekey = 'A';
+		if (lastkey1 == 'D') {
+			player1->setFlippedX(true);
+		}
+		lastkey1 = 'A';
+		break;
+	case cocos2d::EventKeyboard::KeyCode::KEY_D:
+	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
+		player1IsMove = true;
+		player1Movekey = 'D';
+		if (lastkey1 == 'A') {
+			player1->setFlippedX(false);
+		}
+		lastkey1 = 'D';
+		break;
+	case cocos2d::EventKeyboard::KeyCode::KEY_W:
+	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
+		player1IsMove = true;
+		player1Movekey = 'W';
+		break;
+	case cocos2d::EventKeyboard::KeyCode::KEY_S:
+	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
+		player1IsMove = true;
+		player1Movekey = 'S';
+		break;
+	}
+}
+void FightMode::onKeyReleased1(EventKeyboard::KeyCode code, Event *event) {
+	switch (code)
+	{
+	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
+	case cocos2d::EventKeyboard::KeyCode::KEY_A:
+	case cocos2d::EventKeyboard::KeyCode::KEY_D:
+	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_D:
+	case cocos2d::EventKeyboard::KeyCode::KEY_W:
+	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_W:
+	case cocos2d::EventKeyboard::KeyCode::KEY_S:
+	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
+		player1IsMove = false;
+		break;
+	}
+}
+
+void FightMode::player1Movement(char key) {
+	switch (key)
+	{
+	case 'A':
+		if (player1->getPositionX() - 15 >= 30) {
+			player1->setPosition(player1->getPositionX() - 15, player1->getPositionY());
+		}
+		else {
+			player1->setPosition(30, player1->getPositionY());
+		}
+		break;
+	case 'D':
+		if (player1->getPositionX() + 15 <=  visibleSize.width - 30) {
+			player1->setPosition(player1->getPositionX() + 15, player1->getPositionY());
+		}
+		else {
+			player1->setPosition(visibleSize.width - 30, player1->getPositionY());
+		}
+		break;
+	case 'W':
+		if (player1->getPositionY() + 10 <= 280) {
+			player1->setPosition(player1->getPositionX(), player1->getPositionY() + 10);
+		}
+		else {
+			player1->setPosition(player1->getPositionX(), 280);
+		}
+		break;
+	case 'S':
+		if (player1->getPositionY() - 10 >= 80) {
+			player1->setPosition(player1->getPositionX(), player1->getPositionY() - 10);
+		}
+		else {
+			player1->setPosition(player1->getPositionX(), 70);
+		}
+		break;
+	}
 }
