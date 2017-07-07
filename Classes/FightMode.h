@@ -31,7 +31,8 @@ private:
 	//画面更新
 	Size visibleSize;
 	void update(float f);
-
+	int x_num;
+	int y_num;
 	//palyer1动画
 	Sprite * player1;
 	Vector<SpriteFrame*> player1Idle;

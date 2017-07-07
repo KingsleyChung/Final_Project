@@ -26,6 +26,8 @@ bool FightMode::init()
 		return false;
 	}
 	//变量初始化
+	x_num = 35;
+	y_num = 30;
 	player1ADIsMove = false;
 	player1WSIsMove = false;
 	lastkey1 = 'D';
@@ -55,7 +57,7 @@ void FightMode::initAnimation() {
 	//创建一张玩家1的贴图
 	auto texture1 = Director::getInstance()->getTextureCache()->addImage("player1/firzen_0.png");
 	//从贴图中以像素单位切割，创建关键帧
-	auto frame1 = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 81, 81)));
+	auto frame1 = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(81 * 6, 0, 81, 81)));
 	//使用第一帧创建精灵
 	player1 = Sprite::createWithSpriteFrame(frame1);
 	player1->setPosition(Vec2(visibleSize.width / 4 + origin.x, origin.y + player1->getContentSize().height + 42));
@@ -72,7 +74,7 @@ void FightMode::initAnimation() {
 	//创建一张玩家2的贴图
 	auto texture2 = Director::getInstance()->getTextureCache()->addImage("player2/woody_0.png");
 	//从贴图中以像素单位切割，创建关键帧
-	auto frame2 = SpriteFrame::createWithTexture(texture2, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 81, 81)));
+	auto frame2 = SpriteFrame::createWithTexture(texture2, CC_RECT_PIXELS_TO_POINTS(Rect(81 * 6, 0, 81, 81)));
 	//使用第一帧创建精灵
 	player2 = Sprite::createWithSpriteFrame(frame2);
 	player2->setPosition(Vec2(3 * visibleSize.width / 4 + origin.x, origin.y + player2->getContentSize().height + 30));
@@ -108,14 +110,14 @@ void FightMode::initAnimation() {
 	//player1移动动画
 	player1Move.reserve(3);
 	for (int i = 0; i < 3; i++) {
-		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(81 * i, 162, 81, 81)));
+		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i + 320, 0, 80, 81)));
 		player1Move.pushBack(frame);
 	}
 
 	//player1死亡动画
 	player1Dead.reserve(5);
 	for (int i = 0; i < 5; i++) {
-		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(81 * i, 243, 81, 81)));
+		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i, 243, 80, 81)));
 		player1Dead.pushBack(frame);
 	}
 
@@ -162,9 +164,9 @@ void FightMode::initAnimation() {
 	}
 
 	//player2移动动画
-	player2Move.reserve(8);
-	for (int i = 0; i < 8; i++) {
-		auto frame = SpriteFrame::createWithTexture(texture5, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i, 0, 80, 81)));
+	player2Move.reserve(4);
+	for (int i = 0; i < 4; i++) {
+		auto frame = SpriteFrame::createWithTexture(texture5, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i + 320, 0, 80, 81)));
 		player2Move.pushBack(frame);
 	}
 
@@ -420,16 +422,16 @@ void FightMode::player1Movement(char ADkey, char WSkey) {
 		switch (ADkey)
 		{
 		case 'A':
-			if (player1->getPositionX() - 35 >= 30) {
-				x_move = -35;
+			if (player1->getPositionX() - x_num >= 30) {
+				x_move = 0 - x_num;
 			}
 			else {
 				x_move = 30 - player1->getPositionX();
 			}
 			break;
 		case 'D':
-			if (player1->getPositionX() + 35 <= visibleSize.width - 30) {
-				x_move = 35;
+			if (player1->getPositionX() + x_num <= visibleSize.width - 30) {
+				x_move = x_num;
 			}
 			else {
 				x_move = visibleSize.width - 30 - player1->getPositionX();
@@ -440,16 +442,16 @@ void FightMode::player1Movement(char ADkey, char WSkey) {
 	if (player1WSIsMove) {
 		switch (WSkey) {
 		case 'W':
-			if (player1->getPositionY() + 30 <= 280) {
-				y_move = 30;
+			if (player1->getPositionY() + y_num <= 280) {
+				y_move = y_num;
 			}
 			else {
 				y_move = 280 - player1->getPositionY();
 			}
 			break;
 		case 'S':
-			if (player1->getPositionY() - 30 >= 80) {
-				y_move = -30;
+			if (player1->getPositionY() - y_num >= 80) {
+				y_move = 0 - y_num;
 			}
 			else {
 				y_move = 80 - player1->getPositionY();
@@ -458,9 +460,9 @@ void FightMode::player1Movement(char ADkey, char WSkey) {
 		}
 	}
 	auto move = MoveBy::create(0.1f, Vec2(x_move, y_move));
-	auto animation1 = Animation::createWithSpriteFrames(player1Move, 0.1f);
+	auto animation1 = Animation::createWithSpriteFrames(player1Move, 0.10f);
 	auto animate1 = Animate::create(animation1);
-	auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
+	auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.10f);
 	auto animate2 = Animate::create(animation2);
 	player1->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
 }
@@ -515,16 +517,16 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 		switch (ADkey)
 		{
 		case 'A':
-			if (player2->getPositionX() - 35 >= 30) {
-				x_move = -35;
+			if (player2->getPositionX() - x_num >= 30) {
+				x_move = 0 - x_num;
 			}
 			else {
 				x_move = 30 - player2->getPositionX();
 			}
 			break;
 		case 'D':
-			if (player2->getPositionX() + 35 <= visibleSize.width - 30) {
-				x_move = 35;
+			if (player2->getPositionX() + x_num <= visibleSize.width - 30) {
+				x_move = x_num;
 			}
 			else {
 				x_move = visibleSize.width - 30 - player2->getPositionX();
@@ -535,16 +537,16 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 	if (player2WSIsMove) {
 		switch (WSkey) {
 		case 'W':
-			if (player2->getPositionY() + 30 <= 280) {
-				y_move = 30;
+			if (player2->getPositionY() + y_num <= 280) {
+				y_move = y_num;
 			}
 			else {
 				y_move = 280 - player2->getPositionY();
 			}
 			break;
 		case 'S':
-			if (player2->getPositionY() - 30 >= 80) {
-				y_move = -30;
+			if (player2->getPositionY() - y_num >= 80) {
+				y_move = 0 - y_num;
 			}
 			else {
 				y_move = 80 - player2->getPositionY();
@@ -553,9 +555,9 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 		}
 	}
 	auto move = MoveBy::create(0.1f, Vec2(x_move, y_move));
-	auto animation1 = Animation::createWithSpriteFrames(player2Move, 0.5f);
+	auto animation1 = Animation::createWithSpriteFrames(player2Move, 0.1f);
 	auto animate1 = Animate::create(animation1);
-	auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.5f);
+	auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
 	auto animate2 = Animate::create(animation2);
 	player2->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
 }
