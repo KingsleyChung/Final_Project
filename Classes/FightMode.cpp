@@ -77,8 +77,7 @@ bool FightMode::init()
 void FightMode::menuPauseCallback(CCObject* pSender)
 {
 	//得到窗口的大小
-	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
-	CCRenderTexture *renderTexture = CCRenderTexture::create(visibleSize.width, visibleSize.height);
+	RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
 
 	//遍历当前类的所有子节点信息，画入renderTexture中。
 	//这里类似截图。
@@ -87,7 +86,7 @@ void FightMode::menuPauseCallback(CCObject* pSender)
 	renderTexture->end();
 
 	//将游戏界面暂停，压入场景堆栈。并切换到GamePause界面
-	CCDirector::sharedDirector()->pushScene(Gamepause::scene(renderTexture));
+	Director::sharedDirector()->pushScene(Gamepause::createScene(renderTexture));
 }
 
 void FightMode::preloadMusic() {

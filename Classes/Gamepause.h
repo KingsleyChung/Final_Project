@@ -2,18 +2,20 @@
 #define __Gamepause__H__
 #include "cocos2d.h"
 USING_NS_CC;
-class Gamepause : public cocos2d::CCLayer
+class Gamepause : public cocos2d::Layer
 {
 public:
+	static cocos2d::Scene* createScene(RenderTexture* sqr);
+
     virtual bool init();  
-    static cocos2d::CCScene* scene(CCRenderTexture* sqr);
+    //static cocos2d::CCScene* scene(CCRenderTexture* sqr);
     CREATE_FUNC(Gamepause);
 	//继续游戏
-	void menuContinueCallback(CCObject* pSender);
+	void menuContinueCallback(Object* pSender);
 	//重新开始游戏
-	void menuRestart(CCObject* pSender);
+	void menuRestart(Object* pSender);
 	//回主界面
-	void menuLogin(CCObject* pSender);
+	void menuLogin(Object* pSender);
 private:
 
 };

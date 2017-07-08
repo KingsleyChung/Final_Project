@@ -4,28 +4,27 @@
 //传入一个CCrenderTexture 
 //相当于一个正在运行的游戏的截图作为这个暂停对话框的背景 
 //这样就看起来像是对话框在游戏界面之上，一般游戏当中都是这样子写的。
-CCScene* Gamepause::scene(CCRenderTexture* sqr)
+Scene* Gamepause::createScene(RenderTexture* sqr)
 {
-
-    CCScene *scene = CCScene::create();
-    Gamepause *layer = Gamepause::create();
-	scene->addChild(layer,1);//把游戏层放上面，我们还要在这上面放按钮
+    auto scene = Scene::create();
+    auto layer = Gamepause::create();
+	scene->addChild(layer,2);//把游戏层放上面，我们还要在这上面放按钮
 
 
 	//增加部分：使用Game界面中截图的sqr纹理图片创建Sprite
 	//并将Sprite添加到GamePause场景层中
 	//得到窗口的大小
-	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
-	CCSprite *back_spr = CCSprite::createWithTexture(sqr->getSprite()->getTexture());  
+	Size visibleSize = Director::sharedDirector()->getVisibleSize();
+	Sprite *back_spr = Sprite::createWithTexture(sqr->getSprite()->getTexture());  
 	back_spr->setPosition(ccp(visibleSize.width/2,visibleSize.height/2)); //放置位置,这个相对于中心位置。
 	back_spr->setFlipY(true);            //翻转，因为UI坐标和OpenGL坐标不同
-	//back_spr->setColor(cocos2d::ccGRAY); //图片颜色变灰色
+	//back_spr->setColor(cocos2d::GRAY); //图片颜色变灰色
 	scene->addChild(back_spr);
 
 
 	//添加游戏暂停背景小图，用来放按钮
-	CCSprite *back_small_spr = CCSprite::create("back_pause.png");
-	back_small_spr->setPosition(ccp(visibleSize.width/2,visibleSize.height/2)); //放置位置,这个相对于中心位置。
+	Sprite *back_small_spr = Sprite::create("Menu.png");
+	back_small_spr->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2)); //放置位置,这个相对于中心位置。
 	scene->addChild(back_small_spr);
 
 
@@ -40,32 +39,32 @@ bool Gamepause::init()
         return false;
     }
 	//得到窗口的大小
-	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
+	Size visibleSize = Director::sharedDirector()->getVisibleSize();
 	//原点坐标
-	CCPoint origin = CCDirector::sharedDirector()->getVisibleOrigin();
+	Point origin = Director::sharedDirector()->getVisibleOrigin();
 
 	//继续游戏按钮
-	CCMenuItemImage *pContinueItem = CCMenuItemImage::create(
-		"pause_continue.png",
-		"pause_continue.png",
+	MenuItemImage *pContinueItem = MenuItemImage::create(
+		"Resume.png",
+		"Resume.png",
 		this,
 		menu_selector(Gamepause::menuContinueCallback));
 
-	pContinueItem->setPosition(Vec2( visibleSize.width/2 ,visibleSize.height/2+30));
+	pContinueItem->setPosition(Vec2( 30 ,visibleSize.height/2-90));
 
 	//重新开始游戏按钮
-	CCMenuItemImage *pRestartItem = CCMenuItemImage::create(
-		"pause_restart.png",
-		"pause_restart.png",
+	MenuItemImage *pRestartItem = MenuItemImage::create(
+		"Restart.png",
+		"Restart.png",
 		this,
 		menu_selector(Gamepause::menuRestart));
 
 	pRestartItem->setPosition(ccp( visibleSize.width/2 ,visibleSize.height/2-20));
 
 	//回主界面
-	CCMenuItemImage *pLoginItem = CCMenuItemImage::create(
-		"pause_login.png",
-		"pause_login.png",
+	MenuItemImage *pLoginItem = MenuItemImage::create(
+		"Exit.png",
+		"Exit.png",
 		this,
 		menu_selector(Gamepause::menuLogin));
 
@@ -73,24 +72,25 @@ bool Gamepause::init()
 
 
 	// create menu, it's an autorelease object
-	CCMenu* pMenu = CCMenu::create(pContinueItem,pRestartItem,pLoginItem,NULL);
+	Menu* pMenu = Menu::create(pContinueItem,pRestartItem,pLoginItem,NULL);
 	pMenu->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
 	this->addChild(pMenu, 2);
 
     return true;
 }
-void Gamepause::menuContinueCallback(CCObject* pSender)
+//继续游戏
+void Gamepause::menuContinueCallback(Object* pSender)
 {
-	CCDirector::sharedDirector()->popScene();
+	Director::sharedDirector()->popScene();
 
 }
 //重新开始游戏
-void  Gamepause::menuRestart(CCObject* pSender)
+void  Gamepause::menuRestart(Object* pSender)
 {
-	CCDirector::sharedDirector()->replaceScene(FightMode::createScene());
+	Director::sharedDirector()->replaceScene(FightMode::createScene());
 }
 //回主界面
-void  Gamepause::menuLogin(CCObject* pSender)
+void  Gamepause::menuLogin(Object* pSender)
 {
-	CCDirector::sharedDirector()->replaceScene(MenuSence::createScene());
+	Director::sharedDirector()->replaceScene(MenuSence::createScene());
 }
