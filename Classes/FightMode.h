@@ -31,7 +31,7 @@ public:
 
 
 private:
-	//画面更新
+	//鐢婚潰鏇存柊
 	Size visibleSize;
 	void update(float f);
 	int x_num;
@@ -39,31 +39,37 @@ private:
 
 	//palyer1动画
 	Sprite * player1;
+	Sprite * qigong1;
 	Vector<SpriteFrame*> player1Idle;
 	Vector<SpriteFrame*> player1AttackHand;
 	Vector<SpriteFrame*> player1AttackLeg;
 	Vector<SpriteFrame*> player1AttackQigong;
 	Vector<SpriteFrame*> player1Move;
 	Vector<SpriteFrame*> player1Dead;
-	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
+	Vector<SpriteFrame*> player1BeingAttacked;
+	Vector<SpriteFrame*> player1Qigong;//姘斿姛褰㈢姸鍙樺寲鍔ㄧ敾
 	Vector<SpriteFrame*> player1Defense;
 	cocos2d::ProgressTimer* HPpt1;
 	cocos2d::ProgressTimer* MPpt1;
+	bool player1IsDefend;
 
-	//palyer2动画
+	//palyer2鍔ㄧ敾
 	Sprite * player2;
+	Sprite * qigong2;
 	Vector<SpriteFrame*> player2Idle;
 	Vector<SpriteFrame*> player2AttackHand;
 	Vector<SpriteFrame*> player2AttackLeg;
 	Vector<SpriteFrame*> player2AttackQigong;
 	Vector<SpriteFrame*> player2Move;
 	Vector<SpriteFrame*> player2Dead;
-	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
+	Vector<SpriteFrame*> player2BeingAttacked;
+	Vector<SpriteFrame*> player2Qigong;//姘斿姛褰㈢姸鍙樺寲鍔ㄧ敾
 	Vector<SpriteFrame*> player2Defense;
 	cocos2d::ProgressTimer* HPpt2;
 	cocos2d::ProgressTimer* MPpt2;
+	bool player2IsDefend;
 
-	//人物移动相关变量
+	//浜虹墿绉诲姩鐩稿叧鍙橀噺
 	char player1ADMovekey;
 	char player1WSMovekey;
 	char lastkey1;
@@ -81,6 +87,34 @@ private:
 	void player2Movement(char ADkey, char WSkey);
 	void onKeyPressed2(EventKeyboard::KeyCode code, Event* event);
 	void onKeyReleased2(EventKeyboard::KeyCode code, Event *event);
+
+
+	//鎺у埗浜虹墿鍔ㄤ綔鐗瑰畾鍑芥暟
+	void update_numHit(float f);
+	void update_maxHit(float f);
+	void update_powerHit(float f);
+	int attack(Sprite*, Sprite*, int, bool, bool, bool, bool, ProgressTimer*, ProgressTimer*);
+	int power_attack(Sprite*, Sprite*, Sprite*, Sprite*, bool, bool, ProgressTimer*, ProgressTimer*);
+	//浜虹墿鎿嶄綔鐩稿叧鍙橀噺
+	int player1_maxHit = 0;
+	int player1_numHit = 0;
+	bool player1_attack_1 = false;
+	bool player1_attack_2 = false;
+	bool player1_defence = false;
+	bool player1_power = false;
+	cocos2d::ProgressTimer* Hp1;
+	cocos2d::ProgressTimer* Mp1;
+	void player1_dead();
+
+	int player2_maxHit = 0;
+	int player2_numHit = 0;
+	bool player2_attack_1 = false;
+	bool player2_attack_2 = false;
+	bool player2_defence = false;
+	bool player2_power = false;
+	cocos2d::ProgressTimer* Hp2;
+	cocos2d::ProgressTimer* Mp2;
+	void player2_dead();
 
 	void addKeyboardListener();
 	Vec2 origin;
