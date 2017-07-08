@@ -1,9 +1,6 @@
 ﻿#include "FightMode.h"
 #include "SimpleAudioEngine.h"
-<<<<<<< HEAD
 #include "Gamepause.h"
-=======
-//#include "Gamepause.h"
 >>>>>>> 59cb93b419aed62d374d7b3de5c04eb4ebad0ee5
 #include "MenuSence.h"
 using namespace CocosDenshion;
