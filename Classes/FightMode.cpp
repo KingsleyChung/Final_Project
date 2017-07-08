@@ -38,9 +38,6 @@ bool FightMode::init()
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
 
-	player1IsDefend = false;
-	player2IsDefend = false;
-
 	auto bg = Sprite::create("FightBackground.JPG");
 	bg->setPosition(origin.x, origin.y);
 	bg->setAnchorPoint(Vec2(0, 0));
@@ -53,8 +50,6 @@ bool FightMode::init()
 	initAnimation();
 	addKeyboardListener();
 	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
 
 	return true;
 }
@@ -93,84 +88,8 @@ void FightMode::initAnimation() {
 	this->addChild(player2, 2);
 
 
-	//hp条
-	Sprite* sp00 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp11 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp1 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp22 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp2 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp33 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp3 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-
-	//使用hp条设置progressBar
-	Hp1 = ProgressTimer::create(sp0);
-	Hp1->setScaleX(90);
-	Hp1->setAnchorPoint(Vec2(0, 0));
-	Hp1->setType(ProgressTimerType::BAR);
-	Hp1->setBarChangeRate(Point(1, 0));
-	Hp1->setMidpoint(Point(0, 1));
-	Hp1->setPercentage(100);
-	Hp1->setPosition(Vec2(origin.x + 14 * Hp1->getContentSize().width,
-		origin.y + visibleSize.height - 2 * Hp1->getContentSize().height));
-	addChild(Hp1, 1);
-	sp00->setAnchorPoint(Vec2(0, 0));
-	sp00->setPosition(Vec2(origin.x + Hp1->getContentSize().width,
-		origin.y + visibleSize.height - sp00->getContentSize().height));
-	addChild(sp00, 0);
-
-	Hp2 = ProgressTimer::create(sp1);
-	Hp2->setScaleX(90);
-	Hp2->setAnchorPoint(Vec2(0, 0));
-	Hp2->setType(ProgressTimerType::BAR);
-	Hp2->setBarChangeRate(Point(1, 0));
-	Hp2->setMidpoint(Point(0, 1));
-	Hp2->setPercentage(100);
-	Hp2->setPosition(Vec2(origin.x + 14 * Hp2->getContentSize().width + 1000,
-		origin.y + visibleSize.height - 2 * Hp2->getContentSize().height));
-	addChild(Hp2, 1);
-	sp11->setAnchorPoint(Vec2(0, 0));
-	sp11->setPosition(Vec2(origin.x + Hp2->getContentSize().width + 1000,
-		origin.y + visibleSize.height - sp11->getContentSize().height));
-	addChild(sp11, 0);
-
-	Mp1 = ProgressTimer::create(sp2);
-	Mp1->setScaleX(90);
-	Mp1->setAnchorPoint(Vec2(0, 0));
-	Mp1->setType(ProgressTimerType::BAR);
-	Mp1->setBarChangeRate(Point(1, 0));
-	Mp1->setMidpoint(Point(0, 1));
-	Mp1->setPercentage(100);
-	Mp1->setPosition(Vec2(origin.x + 14 * Mp1->getContentSize().width,
-		origin.y + visibleSize.height - 2 * Mp1->getContentSize().height - 100));
-	addChild(Mp1, 1);
-	sp22->setAnchorPoint(Vec2(0, 0));
-	sp22->setPosition(Vec2(origin.x + Mp1->getContentSize().width,
-		origin.y + visibleSize.height - sp22->getContentSize().height - 100));
-	addChild(sp22, 0);
-
-	Mp2 = ProgressTimer::create(sp3);
-	Mp2->setScaleX(90);
-	Mp2->setAnchorPoint(Vec2(0, 0));
-	Mp2->setType(ProgressTimerType::BAR);
-	Mp2->setBarChangeRate(Point(1, 0));
-	Mp2->setMidpoint(Point(0, 1));
-	Mp2->setPercentage(100);
-	Mp2->setPosition(Vec2(origin.x + 14 * Mp2->getContentSize().width + 1000,
-		origin.y + visibleSize.height - 2 * Mp2->getContentSize().height - 100));
-	addChild(Mp2, 1);
-	sp33->setAnchorPoint(Vec2(0, 0));
-	sp33->setPosition(Vec2(origin.x + Mp2->getContentSize().width + 1000,
-		origin.y + visibleSize.height - sp33->getContentSize().height - 100));
-	addChild(sp33, 0);
-
-	//
 	addKeyboardListener();
-	/*schedule(schedule_selector(FightMode::update), 0.04f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);*/
-
-
+	schedule(schedule_selector(FightMode::update), 0.04f, kRepeatForever, 0);
 	// player2静态动画
 	player2Idle.reserve(1);
 	player2Idle.pushBack(frame2);
@@ -239,10 +158,9 @@ void FightMode::initAnimation() {
 		player2AttackHand.pushBack(frame);
 	}
 	//player2脚攻击动画
-	auto textureleg = Director::getInstance()->getTextureCache()->addImage("player2/woody_1.png");
-	player2AttackLeg.reserve(3);
-	for (int i = 0; i < 3; i++) {
-		auto frame = SpriteFrame::createWithTexture(textureleg, CC_RECT_PIXELS_TO_POINTS(Rect(560 + 80 * i, 243, 80, 81)));
+	player2AttackLeg.reserve(0);
+	for (int i = 0; i < 1; i++) {
+		auto frame = SpriteFrame::createWithTexture(texture5, CC_RECT_PIXELS_TO_POINTS(Rect(640, 81, 80, 81)));
 		player2AttackLeg.pushBack(frame);
 	}
 
@@ -353,17 +271,17 @@ void FightMode::player1AttackByQigong(Ref* pSender) {
 void FightMode::player1QiGong() {
 	auto texture = Director::getInstance()->getTextureCache()->addImage("player1/firzen_chasei.png");
 	auto frame = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 78, 70)));
-	qigong1 = Sprite::createWithSpriteFrame(frame);
-	qigong1->setPosition(Vec2(player1->getPositionX() + 36, player1->getPositionY()));
+	auto qigong = Sprite::createWithSpriteFrame(frame);
+	qigong->setPosition(Vec2(player1->getPositionX() + 36, player1->getPositionY()));
 	if (lastkey1 == 'A')
-		qigong1->setPosition(Vec2(player1->getPositionX() - 36, player1->getPositionY()));
+		qigong->setPosition(Vec2(player1->getPositionX() - 36, player1->getPositionY()));
 	else
-		qigong1->setPosition(Vec2(player1->getPositionX() + 36, player1->getPositionY()));
+		qigong->setPosition(Vec2(player1->getPositionX() + 36, player1->getPositionY()));
 	//设置缩放比例
-	Size qigongSize = qigong1->getContentSize();
+	Size qigongSize = qigong->getContentSize();
 	float scaleX = visibleSize.width * 0.126 / qigongSize.width;
-	qigong1->setScale(scaleX, scaleX);
-	this->addChild(qigong1, 2);
+	qigong->setScale(scaleX, scaleX);
+	this->addChild(qigong, 2);
 	auto animation3 = Animation::createWithSpriteFrames(player1Qigong, 0.15f);
 	auto animate3 = Animate::create(animation3);
 	auto moveBy = MoveBy::create(0.8, Vec2(600, 0));
@@ -373,7 +291,8 @@ void FightMode::player1QiGong() {
 		moveBy = MoveBy::create(0.8, Vec2(600, 0));
 	auto spawn = Spawn::createWithTwoActions(animate3, moveBy);
 	auto fadeout = FadeOut::create(0.01f);
-	qigong1->runAction(Sequence::create(spawn, fadeout, NULL));
+	qigong->runAction(Sequence::create(spawn, fadeout, NULL));
+
 }
 
 void FightMode::player2AttackByHand(Ref* pSender) {
@@ -385,7 +304,6 @@ void FightMode::player2AttackByHand(Ref* pSender) {
 		player2->runAction(Sequence::create(animate1, animate2, NULL));
 	}
 }
-
 void FightMode::player2AttackByLeg(Ref* pSender) {
 	if (player2->getNumberOfRunningActions() == 0) {
 		auto animation1 = Animation::createWithSpriteFrames(player2AttackLeg, 0.5f);
@@ -395,7 +313,6 @@ void FightMode::player2AttackByLeg(Ref* pSender) {
 		player2->runAction(Sequence::create(animate1, animate2, NULL));
 	}
 }
-
 void FightMode::player2MoveAnimation(Ref* pSender) {
 	if (player2->getNumberOfRunningActions() == 0) {
 		auto animation1 = Animation::createWithSpriteFrames(player2Move, 0.5f);
@@ -405,7 +322,6 @@ void FightMode::player2MoveAnimation(Ref* pSender) {
 		player2->runAction(Sequence::create(animate1, animate2, NULL));
 	}
 }
-
 void FightMode::player2WouldDead(Ref* pSender) {
 	if (player2->getNumberOfRunningActions() == 0) {
 		auto animation1 = Animation::createWithSpriteFrames(player2Dead, 0.5f);
@@ -415,7 +331,6 @@ void FightMode::player2WouldDead(Ref* pSender) {
 		player2->runAction(Sequence::create(animate1, animate2, NULL));
 	}
 }
-
 void FightMode::player2WouldDefense(Ref* pSender) {
 	if (player2->getNumberOfRunningActions() == 0) {
 		auto animation1 = Animation::createWithSpriteFrames(player2Defense, 0.5f);
@@ -441,25 +356,24 @@ void FightMode::player2AttackByQigong(Ref* pSender) {
 		player2->runAction(Sequence::create(animate1, callBack, animate3, animate2, NULL));
 	}
 }
-
 void FightMode::player2QiGong() {
 	auto texture = Director::getInstance()->getTextureCache()->addImage("player2/woody_ball.png");
 	auto frame = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 162, 80, 81)));
-	qigong2 = Sprite::createWithSpriteFrame(frame);
-	qigong2->setPosition(Vec2(player2->getPositionX() + 36, player2->getPositionY()));
+	auto qigong = Sprite::createWithSpriteFrame(frame);
+	qigong->setPosition(Vec2(player2->getPositionX() + 36, player2->getPositionY()));
 	if (lastkey2 == 'A') {
-		qigong2->setPosition(Vec2(player2->getPositionX() - 36, player2->getPositionY()));
-		qigong2->setFlippedX(true);
+		qigong->setPosition(Vec2(player2->getPositionX() - 36, player2->getPositionY()));
+		qigong->setFlippedX(true);
 	}
 	else {
-		qigong2->setPosition(Vec2(player2->getPositionX() + 36, player2->getPositionY()));
-		qigong2->setFlippedX(false);
+		qigong->setPosition(Vec2(player2->getPositionX() + 36, player2->getPositionY()));
+		qigong->setFlippedX(false);
 	}
 	//设置缩放比例
-	Size qigongSize = qigong2->getContentSize();
+	Size qigongSize = qigong->getContentSize();
 	float scaleX = visibleSize.width * 0.126 / qigongSize.width;
-	qigong2->setScale(scaleX, scaleX);
-	this->addChild(qigong2, 2);
+	qigong->setScale(scaleX, scaleX);
+	this->addChild(qigong, 2);
 	auto animation3 = Animation::createWithSpriteFrames(player2Qigong, 0.3f);
 	auto animate3 = Animate::create(animation3);
 	auto moveBy = MoveBy::create(1.2, Vec2(600, 0));
@@ -469,11 +383,10 @@ void FightMode::player2QiGong() {
 		moveBy = MoveBy::create(1.2, Vec2(600, 0));
 	auto spawn = Spawn::createWithTwoActions(animate3, moveBy);
 	auto fadeout = FadeOut::create(0.01f);
-	qigong2->runAction(Sequence::create(spawn, fadeout, NULL));
+	qigong->runAction(Sequence::create(spawn, fadeout, NULL));
 }
 
 void FightMode::update(float f) {
-	//weimumu
 	if (player1ADIsMove || player1WSIsMove) {
 		this->player1Movement(player1ADMovekey, player1WSMovekey);
 	}
@@ -544,10 +457,10 @@ void FightMode::addKeyboardListener() {
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener2, player2);
 }
 
+
 void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 	switch (code)
 	{
-	//weimumu
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
 	case cocos2d::EventKeyboard::KeyCode::KEY_A:
 		player1ADIsMove = true;
@@ -576,31 +489,11 @@ void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 		player1WSIsMove = true;
 		player1WSMovekey = 'S';
 		break;
-
-
-
-	//zzh
-	case EventKeyboard::KeyCode::KEY_J:
-		player1_numHit++;
-		player1_attack_1 = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_K:
-		player1_numHit++;
-		player1_attack_2 = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_L:
-		player1_defence = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_I:
-		player1_power = true;
-		break;
 	}
 }
-
 void FightMode::onKeyReleased1(EventKeyboard::KeyCode code, Event *event) {
 	switch (code)
 	{
-	//weimumu
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A:
 	case cocos2d::EventKeyboard::KeyCode::KEY_A:
 	case cocos2d::EventKeyboard::KeyCode::KEY_D:
@@ -613,24 +506,8 @@ void FightMode::onKeyReleased1(EventKeyboard::KeyCode code, Event *event) {
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
 		player1WSIsMove = false;
 		break;
-
-
-	//zzh
-	case EventKeyboard::KeyCode::KEY_J:
-		player1_attack_1 = false;
-		break;
-	case EventKeyboard::KeyCode::KEY_K:
-		player1_attack_2 = false;
-		break;
-	case EventKeyboard::KeyCode::KEY_L:
-		player1_defence = false;
-		break;
-	case EventKeyboard::KeyCode::KEY_I:
-		player1_power = false;
-		break;
 	}
 }
-
 void FightMode::player1Movement(char ADkey, char WSkey) {
 	float x_move = 0;
 	float y_move = 0;
@@ -683,10 +560,10 @@ void FightMode::player1Movement(char ADkey, char WSkey) {
 	player1->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
 }
 
+
 void FightMode::onKeyPressed2(EventKeyboard::KeyCode code, Event* event) {
 	switch (code)
 	{
-	//weimumu
 	case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		player2ADIsMove = true;
 		player2ADMovekey = 'A';
@@ -711,31 +588,11 @@ void FightMode::onKeyPressed2(EventKeyboard::KeyCode code, Event* event) {
 		player2WSIsMove = true;
 		player2WSMovekey = 'S';
 		break;
-
-
-
-	//zzh
-	case EventKeyboard::KeyCode::KEY_1:
-		player2_numHit++;
-		player2_attack_1 = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_2:
-		player2_numHit++;
-		player2_attack_2 = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_3:
-		player2_defence = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_5:
-		player2_power = true;
-		break;
 	}
 }
-
 void FightMode::onKeyReleased2(EventKeyboard::KeyCode code, Event *event) {
 	switch (code)
 	{
-	//weimumu
 	case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 	case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
 		player2ADIsMove = false;
@@ -744,26 +601,8 @@ void FightMode::onKeyReleased2(EventKeyboard::KeyCode code, Event *event) {
 	case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		player2WSIsMove = false;
 		break;
-
-
-
-
-	//zzh
-	case EventKeyboard::KeyCode::KEY_1:
-		player2_attack_1 = false;
-		break;
-	case EventKeyboard::KeyCode::KEY_2:
-		player2_attack_2 = false;
-		break;
-	case EventKeyboard::KeyCode::KEY_3:
-		player2_defence = false;
-		break;
-	case EventKeyboard::KeyCode::KEY_5:
-		player2_power = false;
-		break;
 	}
 }
-
 void FightMode::player2Movement(char ADkey, char WSkey) {
 	float x_move = 0;
 	float y_move = 0;
@@ -814,126 +653,4 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 	auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
 	auto animate2 = Animate::create(animation2);
 	player2->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
-}
-
-int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool player1_attack_1, bool player1_attack_2, bool player2_defence, bool player1_power, ProgressTimer* Hp2, ProgressTimer* Mp1) {
-	int flag = 0;
-	if (player1_numHit > 0) {
-		//人物1用拳+人物2未防御/人物1用脚/人物1用大招
-		if (player1_attack_1 && !player2_defence)
-			flag = 1;
-		else if (player1_attack_2)
-			flag = 2;
-		//判断是否击中
-		Rect player1Rect = player1->getBoundingBox();
-		Rect player1attackRect = Rect(
-			player1Rect.getMinX(),
-			player1Rect.getMinY(),
-			player1Rect.getMaxX() - player1Rect.getMinX() + 10,
-			player1Rect.getMaxY() - player1Rect.getMinY()
-		);
-		if (player1attackRect.containsPoint(player2->getPosition())) {
-			auto hp = Hp2->getPercentage();
-			auto mp = Mp1->getPercentage();
-			if (flag == 1)
-				hp -= 5;
-			else if (flag == 2)
-				hp -= 3;
-			auto hpAction = ProgressTo::create(0.1, hp);
-			Hp2->runAction(hpAction);
-			flag += 2;
-		}
-	}
-	return flag;
-}
-
-//0.1秒内只能攻击一次
-void FightMode::update_numHit(float f) {
-	int flag1 = attack(player1, player2, player1_numHit, player1_attack_1, player1_attack_2, player2_defence, player1_power, Hp2, Mp1);
-	int flag2 = attack(player2, player1, player2_numHit, player2_attack_1, player2_attack_2, player1_defence, player2_power, Hp1, Mp2);
-	//执行人物1的动画
-	if (flag1 % 2 == 1) {
-		//拳打
-		auto animation1 = Animation::createWithSpriteFrames(player1AttackHand, 0.1f);
-		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-		auto animate2 = Animate::create(animation2);
-		player1->runAction(Sequence::create(animate1, animate2, NULL));
-	}
-	else if (flag1 % 2 == 0 && flag1) {
-		//脚踢
-		auto animation1 = Animation::createWithSpriteFrames(player1AttackLeg, 0.1f);
-		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-		auto animate2 = Animate::create(animation2);
-		player1->runAction(Sequence::create(animate1, animate2, NULL));
-	}
-	if (flag1 > 2)
-		player2_maxHit++;
-
-	//执行人物2的动画
-	if (flag2 % 2 == 1) {
-		//拳打
-		auto animation1 = Animation::createWithSpriteFrames(player2AttackHand, 0.1f);
-		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-		auto animate2 = Animate::create(animation2);
-		player2->runAction(Sequence::create(animate1, animate2, NULL));
-	}
-	else if (flag2 % 2 == 0 && flag2) {
-		//脚踢
-		auto animation1 = Animation::createWithSpriteFrames(player2AttackLeg, 0.1f);
-		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-		auto animate2 = Animate::create(animation2);
-		player2->runAction(Sequence::create(animate1, animate2, NULL));
-	}
-	if (flag2 > 2)
-		player1_maxHit++;
-
-	player1_numHit = 0;
-	player2_numHit = 0;
-}
-
-//1.0秒内被击中三次就弹飞
-void FightMode::update_maxHit(float f) {
-	if (player2_maxHit > 3) {
-		//执行死亡动画（人物弹飞）
-		player2_dead();
-		player2_maxHit = 0;
-	}
-
-	if (player1_maxHit > 3) {
-		//执行死亡动画（人物弹飞）
-		player1_dead();
-		player1_maxHit = 0;
-	}
-}
-
-void FightMode::player1_dead() {
-	auto pos = player2->getPosition();
-	int dis = 0;
-	if (pos.x + 200 <= visibleSize.width)
-		dis = 200;
-	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
-	auto animation1 = Animation::createWithSpriteFrames(player1Dead, 0.2f);
-	auto animate1 = Animate::create(animation1);
-	auto animation2 = Animation::createWithSpriteFrames(player1Idle, 1.0f);
-	auto animate2 = Animate::create(animation2);
-	auto seq = Sequence::create(Spawn::create(animate1, moveAnimation), nullptr);
-	player1->runAction(Sequence::create(seq, animate2, NULL));
-}
-
-void FightMode::player2_dead() {
-	auto pos = player2->getPosition();
-	int dis = 0;
-	if (pos.x + 200 <= visibleSize.width)
-		dis = 200;
-	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
-	auto animation1 = Animation::createWithSpriteFrames(player2Dead, 0.2f);
-	auto animate1 = Animate::create(animation1);
-	auto animation2 = Animation::createWithSpriteFrames(player2Idle, 1.0f);
-	auto animate2 = Animate::create(animation2);
-	auto seq = Sequence::create(Spawn::create(animate1, moveAnimation), nullptr);
-	player2->runAction(Sequence::create(seq, animate2, NULL));
 }
