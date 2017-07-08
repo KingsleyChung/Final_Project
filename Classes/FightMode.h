@@ -36,7 +36,8 @@ private:
 	void update(float f);
 	int x_num;
 	int y_num;
-	//player1动画
+
+	//palyer1����
 	Sprite * player1;
 	Sprite * qigong1;
 	Vector<SpriteFrame*> player1Idle;
@@ -48,6 +49,8 @@ private:
 	Vector<SpriteFrame*> player1BeingAttacked;
 	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player1Defense;
+	cocos2d::ProgressTimer* HPpt1;
+	cocos2d::ProgressTimer* MPpt1;
 	bool player1IsDefend;
 
 	//palyer2动画
@@ -62,6 +65,8 @@ private:
 	Vector<SpriteFrame*> player2BeingAttacked;
 	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player2Defense;
+	cocos2d::ProgressTimer* HPpt2;
+	cocos2d::ProgressTimer* MPpt2;
 	bool player2IsDefend;
 
 	//人物移动相关变量
