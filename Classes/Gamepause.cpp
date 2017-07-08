@@ -60,7 +60,7 @@ bool Gamepause::init()
 		"Restart.png",
 		CC_CALLBACK_1(Gamepause::menuRestart, this));
 
-	pRestartItem->setPosition(ccp(0 ,visibleSize.height/15 - 100));
+	pRestartItem->setPosition(Vec2(0 ,visibleSize.height/15 - 100));
 
 	//回主界面
 	MenuItemImage *pLoginItem = MenuItemImage::create(
@@ -68,7 +68,7 @@ bool Gamepause::init()
 		"Exit.png",
 		CC_CALLBACK_1(Gamepause::menuLogin, this));
 
-	pLoginItem->setPosition(ccp(0 ,visibleSize.height/15 - 200));
+	pLoginItem->setPosition(Vec2(0 ,visibleSize.height/15 - 200));
 
 
 	// create menu, it's an autorelease object

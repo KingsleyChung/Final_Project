@@ -10,7 +10,9 @@ public:
 
     virtual bool init();
 
-    virtual void enterCooperateModeCallback(Ref* pSender);
+    virtual void enterFightModeCallback(Ref* pSender);
+
+	virtual void menuCloseCallback(Ref* pSender);
 
     // a selector callback
     //void startMenuCallback(cocos2d::Ref* pSender);
