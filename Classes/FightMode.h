@@ -1,4 +1,4 @@
-#ifndef __FIGHTMODE_H__
+﻿#ifndef __FIGHTMODE_H__
 #define __FIGHTMODE_H__
 
 #include "cocos2d.h"
@@ -34,7 +34,7 @@ private:
 	int x_num;
 	int y_num;
 
-	//palyer1����
+	//palyer1动画
 	Sprite * player1;
 	Sprite * qigong1;
 	Vector<SpriteFrame*> player1Idle;
@@ -90,7 +90,7 @@ private:
 
 
 	//控制人物动作特定函数
-	//普通攻�?
+	//普通攻击
 	void update_numHit(float f);
 	int attack(Sprite*, Sprite*, int, bool, bool, bool, bool, ProgressTimer*, ProgressTimer*);
 	void player_attack(Sprite*, Vector<SpriteFrame*>, Vector<SpriteFrame*>);
@@ -123,7 +123,7 @@ private:
 	Vec2 origin;
 
 	Menu * menu;//暂停菜单
-	int flag;//空格按次�?
+	int flag;//空格按次�?
 };
 
 #endif // __FIGHTMODE_H__
