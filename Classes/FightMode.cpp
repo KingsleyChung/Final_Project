@@ -54,11 +54,11 @@ bool FightMode::init()
 	bg->setScaleY(visibleSize.height / bgy);
 	this->addChild(bg, 0);
 
-	auto pauseLabel = Label::create("Pause", "fonts/arial.ttf", 76);
-	auto pauseMenuItemLabel = MenuItemLabel::create(pauseLabel, CC_CALLBACK_1(FightMode::menuPauseCallback, this));
-	auto pauseMenu = Menu::create(pauseMenuItemLabel, NULL);
-	pauseMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	this->addChild(pauseMenu, 1);
+	auto menuLabel = Label::create("Menu", "fonts/arial.ttf", 40);
+	auto menuMenuItemLabel = MenuItemLabel::create(menuLabel, CC_CALLBACK_1(FightMode::menuPauseCallback, this));
+	auto menuMenu = Menu::create(menuMenuItemLabel, NULL);
+	menuMenu->setPosition(visibleSize.width / 2, visibleSize.height - 54);
+	this->addChild(menuMenu, 1);
 
 	initAnimation();
 	preloadMusic();
@@ -74,11 +74,10 @@ bool FightMode::init()
 	return true;
 }
 
-void FightMode::menuPauseCallback(CCObject* pSender)
+void FightMode::menuPauseCallback(Object* pSender)
 {
 	//得到窗口的大小
-	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
-	CCRenderTexture *renderTexture = CCRenderTexture::create(visibleSize.width, visibleSize.height);
+	RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
 
 	//遍历当前类的所有子节点信息，画入renderTexture中。
 	//这里类似截图。
@@ -87,7 +86,7 @@ void FightMode::menuPauseCallback(CCObject* pSender)
 	renderTexture->end();
 
 	//将游戏界面暂停，压入场景堆栈。并切换到GamePause界面
-	CCDirector::sharedDirector()->pushScene(Gamepause::scene(renderTexture));
+	Director::sharedDirector()->pushScene(Gamepause::createScene(renderTexture));
 }
 
 void FightMode::preloadMusic() {
@@ -1006,35 +1005,4 @@ void FightMode::meet(EventCustom * event) {
 		}
 		temp2++;
 	}
-}
-
-
-void FightMode::pause() {
-	auto labelReturnGame = Label::createWithSystemFont("Return Game", "Marker Felt", 80);
-	auto labelReStart = Label::createWithSystemFont("ReStart", "Marker Felt", 80);
-	auto labelReturnMenu = Label::createWithSystemFont("Return Menu", "Marker Felt", 80);
-	auto menuItem1 = MenuItemLabel::create(labelReturnGame, CC_CALLBACK_1(FightMode::returnGameCallback, this));
-	auto menuItem2 = MenuItemLabel::create(labelReStart, CC_CALLBACK_1(FightMode::reStartCallback, this));
-	auto menuItem3 = MenuItemLabel::create(labelReturnMenu, CC_CALLBACK_1(FightMode::returnMenuCallback, this));
-	menuItem1->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 3 / 5);
-	menuItem2->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 2 / 5);
-	menuItem3->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 1 / 5);
-	menu = Menu::create(menuItem1,menuItem2, menuItem3, NULL);
-	menu->setPosition((Vec2::ZERO));
-	this->addChild(menu, 3);
-	CCDirector::getInstance()->pause();
-	//CCActionManage
-}
-void FightMode::returnGameCallback(Ref* pSender) {
-	flag = 0;
-	this->removeChild(menu);
-	CCDirector::getInstance()->resume();
-}
-void FightMode::reStartCallback(Ref* pSender) {
-	//auto fightMode = FightMode::createScene();
-	//Director::getInstance()->replaceScene(TransitionSlideInT::create(1, fightMode));
-}
-void FightMode::returnMenuCallback(Ref* pSender) {
-	//auto menuSence = MenuSence::createScene();
-	//Director::getInstance()->replaceScene(TransitionSlideInT::create(1, menuSence));
 }

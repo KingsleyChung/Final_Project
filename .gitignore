@@ -18,6 +18,7 @@ proj.android-studio/
 proj.ios_mac/
 proj.linux/
 proj.tizen/
+proj.win8.1-universal/
 proj.win10/
 proj.win32/
 

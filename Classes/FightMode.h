@@ -21,11 +21,8 @@ public:
 
 	void preloadMusic();
 	void playBgm();
-	void pause();
-	void returnGameCallback(Ref* pSender);
-	void reStartCallback(Ref* pSender);
-	void returnMenuCallback(Ref* pSender);
-	void menuPauseCallback(CCObject* pSender);
+	
+	void menuPauseCallback(Object* pSender);
 
 private:
 	//画面更新
