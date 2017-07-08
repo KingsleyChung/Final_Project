@@ -180,8 +180,8 @@ void FightMode::initAnimation() {
 	MPpt2->setScaleX(11.7);
 	MPpt2->setAnchorPoint(Vec2(0, 0));
 	MPpt2->setType(ProgressTimerType::BAR);
-	MPpt2->setBarChangeRate(Point(0, 1));
-	MPpt2->setMidpoint(Point(0, 1));
+	MPpt2->setBarChangeRate(Point(1, 0));
+	MPpt2->setMidpoint(Point(1, 0));
 	MPpt2->setPercentage(100);
 	MPpt2->setPosition(Vec2(visibleSize.width - (MPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.24));
 	addChild(MPpt2, 1);
@@ -309,18 +309,24 @@ void FightMode::initAnimation() {
 
 //player1运行气功动画并产生气功精灵移动
 void FightMode::player1AttackByQigong() {
+	auto mp1 = MPpt1->getPercentage();
+	if (mp1 < 30)
+		return;
+	else
+		mp1 -= 30;
+	auto mpAction = ProgressTo::create(0.1, mp1);
+	MPpt1->runAction(mpAction);
+	SimpleAudioEngine::getInstance()->playEffect("music/player1/qigong.wav", false);
 	auto callBack = CallFunc::create(CC_CALLBACK_0(FightMode::player1QiGong, this));
-	if (true) {
-		auto animation1 = Animation::createWithSpriteFrames(player1AttackQigong, 0.1f);
-		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-		auto animate2 = Animate::create(animation2);
-		Vector<SpriteFrame*> afterSendAnimation;
-		afterSendAnimation.pushBack(player1AttackQigong.at(2));
-		auto animation3 = Animation::createWithSpriteFrames(afterSendAnimation, 0.5f);
-		auto animate3 = Animate::create(animation3);
-		player1->runAction(Sequence::create(animate1, callBack, animate3, animate2, NULL));
-	}
+	auto animation1 = Animation::createWithSpriteFrames(player1AttackQigong, 0.1f);
+	auto animate1 = Animate::create(animation1);
+	auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
+	auto animate2 = Animate::create(animation2);
+	Vector<SpriteFrame*> afterSendAnimation;
+	afterSendAnimation.pushBack(player1AttackQigong.at(2));
+	auto animation3 = Animation::createWithSpriteFrames(afterSendAnimation, 0.5f);
+	auto animate3 = Animate::create(animation3);
+	player1->runAction(Sequence::create(animate1, callBack, animate3, animate2, NULL));
 }
 
 void FightMode::player1QiGong() {
@@ -354,18 +360,24 @@ void FightMode::player1QiGong() {
 
 //player2运行气功动画并产生气功精灵移动
 void FightMode::player2AttackByQigong() {
+	auto mp2 = MPpt2->getPercentage();
+	if (mp2 < 30)
+		return;
+	else
+		mp2 -= 30;
+	auto mpAction = ProgressTo::create(0.1, mp2);
+	MPpt2->runAction(mpAction);
+	SimpleAudioEngine::getInstance()->playEffect("music/player2/qigong.wav", false);
 	auto callBack = CallFunc::create(CC_CALLBACK_0(FightMode::player2QiGong, this));
-	if (true) {
-		auto animation1 = Animation::createWithSpriteFrames(player2AttackQigong, 0.1f);
-		auto animate1 = Animate::create(animation1);
-		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-		auto animate2 = Animate::create(animation2);
-		Vector<SpriteFrame*> afterSendAnimation;
-		afterSendAnimation.pushBack(player2AttackQigong.at(8));
-		auto animation3 = Animation::createWithSpriteFrames(afterSendAnimation, 0.3f);
-		auto animate3 = Animate::create(animation3);
-		player2->runAction(Sequence::create(animate1, callBack, animate3, animate2, NULL));
-	}
+	auto animation1 = Animation::createWithSpriteFrames(player2AttackQigong, 0.1f);
+	auto animate1 = Animate::create(animation1);
+	auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
+	auto animate2 = Animate::create(animation2);
+	Vector<SpriteFrame*> afterSendAnimation;
+	afterSendAnimation.pushBack(player2AttackQigong.at(8));
+	auto animation3 = Animation::createWithSpriteFrames(afterSendAnimation, 0.3f);
+	auto animate3 = Animate::create(animation3);
+	player2->runAction(Sequence::create(animate1, callBack, animate3, animate2, NULL));
 }
 
 void FightMode::player2QiGong() {
@@ -448,24 +460,14 @@ void FightMode::update(float f) {
 		}
 	}
 
-	////Mp补充
-	//auto mp1 = Mp1->getPercentage();
-	//mp1 += 1;
-	//auto mp1Action = ProgressTo::create(0.1, mp1);
-	//Mp1->runAction(mp1Action);
-
-	//auto mp2 = Mp2->getPercentage();
-	//mp2 += 1;
-	//auto mp2Action = ProgressTo::create(0.1, mp2);
-	//Mp2->runAction(mp2Action);
-
+	//Mp补充
 	auto mp1 = MPpt1->getPercentage();
-	mp1 += 1;
+	mp1 += 0.05;
 	auto mp1Action = ProgressTo::create(0.1, mp1);
-	MPpt2->runAction(mp1Action);
+	MPpt1->runAction(mp1Action);
 
 	auto mp2 = MPpt2->getPercentage();
-	mp2 += 1;
+	mp2 += 0.05;
 	auto mp2Action = ProgressTo::create(0.1, mp2);
 	MPpt2->runAction(mp2Action);
 }
@@ -537,7 +539,6 @@ void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 		break;
 	case EventKeyboard::KeyCode::KEY_I:
 		player1_power = true;
-		SimpleAudioEngine::getInstance()->playEffect("music/player1/qigong.wav", false);
 		break;
 	}
 }
@@ -675,7 +676,7 @@ void FightMode::onKeyPressed2(EventKeyboard::KeyCode code, Event* event) {
 		break;
 	case EventKeyboard::KeyCode::KEY_5:
 		player2_power = true;
-		SimpleAudioEngine::getInstance()->playEffect("music/player2/qigong.wav", false);
+		
 		break;
 	}
 }
@@ -853,36 +854,6 @@ void FightMode::player_attack(Sprite* player, Vector<SpriteFrame*> player_action
 }
 
 
-//监听气功与玩家的位置
-void FightMode::update_powerHit(float f) {
-	// 分发自定义事件
-	EventCustom e("meet");
-	_eventDispatcher->dispatchEvent(&e);
-	//power_attack(player1, player2, qigong1, qigong2, player1_power, player2_defence, Hp2, Mp1);
-
-	std::list<Sprite*>::iterator i = player1QiGongNumber.begin();
-	std::list<Sprite*>::iterator j = player2QiGongNumber.begin();
-	int count1 = player1QiGongNumber.size();
-	int count2 = player2QiGongNumber.size();
-
-	while (count1--)
-	{
-		if ((*i)->getPositionX() > visibleSize.width || (*i)->getPositionX() < 0)
-			i = player1QiGongNumber.erase(i);
-		else
-			i++;
-	}
-
-	while (count2--)
-	{
-		if ((*j)->getPositionX() > visibleSize.width || (*j)->getPositionX() < 0)
-			j = player2QiGongNumber.erase(j);
-		else
-			j++;
-	}
-}
-
-
 //1.0秒内被击中三次就弹飞
 void FightMode::update_maxHit(float f) {
 	if (player2_maxHit > 3) {
@@ -924,14 +895,40 @@ void FightMode::player_dead(Sprite* player, char lastkey, Vector<SpriteFrame*> p
 }
 
 
+//0.01秒监听气功与玩家的位置
+void FightMode::update_powerHit(float f) {
+	// 分发自定义事件
+	EventCustom e("meet");
+	_eventDispatcher->dispatchEvent(&e);
+	//power_attack(player1, player2, qigong1, qigong2, player1_power, player2_defence, Hp2, Mp1);
 
+	std::list<Sprite*>::iterator i = player1QiGongNumber.begin();
+	std::list<Sprite*>::iterator j = player2QiGongNumber.begin();
+	int count1 = player1QiGongNumber.size();
+	int count2 = player2QiGongNumber.size();
+
+	while (count1--)
+	{
+		if ((*i)->getPositionX() > visibleSize.width || (*i)->getPositionX() < 0)
+			i = player1QiGongNumber.erase(i);
+		else
+			i++;
+	}
+
+	while (count2--)
+	{
+		if ((*j)->getPositionX() > visibleSize.width || (*j)->getPositionX() < 0)
+			j = player2QiGongNumber.erase(j);
+		else
+			j++;
+	}
+}
 // 添加自定义监听器
 void FightMode::addCustomListener() {
 	auto dispatcher = Director::getInstance()->getEventDispatcher();
 	auto meetListener = EventListenerCustom::create("meet", CC_CALLBACK_1(FightMode::meet, this));
 	dispatcher->addEventListenerWithFixedPriority(meetListener, 1);
 }
-
 void FightMode::meet(EventCustom * event) {
 	//判断player1是否击中player2
 	int temp = 0;
@@ -939,11 +936,21 @@ void FightMode::meet(EventCustom * event) {
 	for (; i != player1QiGongNumber .end();) {
 		if ((*i)->getPositionY() - player2->getPositionY() <= 70 && (*i)->getPositionY() - player2->getPositionY() >= -70) {
 			if ((*i)->getPositionX() - player2->getPositionX() <= 16 && (*i)->getPositionX() - player2->getPositionX() >= -16) {
-				player2->runAction(Sequence::create(Animate::create(Animation::createWithSpriteFrames(player2BeingAttacked, 0.05f, 1)), nullptr));
+				//player2->runAction(Sequence::create(Animate::create(Animation::createWithSpriteFrames(player2BeingAttacked, 0.05f, 1)), nullptr));
 				auto fadeout = FadeOut::create(0.01f);
 				(*i)->runAction(fadeout);
 				i = player1QiGongNumber.erase(i);
 				SimpleAudioEngine::getInstance()->playEffect("music/BeingAttack.wav", false);
+				auto hp2 = HPpt2->getPercentage();
+				if (player2_defence) {
+					hp2 -= 5;
+				}
+				else {
+					hp2 -= 10;
+					player_dead(player2, lastkey1, player2Dead, player2Idle);
+				}
+				auto mpAction = ProgressTo::create(0.1, hp2);
+				HPpt2->runAction(mpAction);
 			}
 			else {
 				i++;
@@ -961,10 +968,21 @@ void FightMode::meet(EventCustom * event) {
 	for (; j != player2QiGongNumber.end();) {
 		if ((*j)->getPositionY() - player1->getPositionY() <= 70 && (*j)->getPositionY() - player1->getPositionY() >= -70) {
 			if ((*j)->getPositionX() - player1->getPositionX() <= 16 && (*j)->getPositionX() - player1->getPositionX() >= -16) {
-				player1->runAction(Sequence::create(Animate::create(Animation::createWithSpriteFrames(player1BeingAttacked, 0.05f, 1)), nullptr));
+				//player1->runAction(Sequence::create(Animate::create(Animation::createWithSpriteFrames(player1BeingAttacked, 0.05f, 1)), nullptr));
 				auto fadeout = FadeOut::create(0.01f);
 				(*j)->runAction(fadeout);
 				j = player2QiGongNumber.erase(j);
+				SimpleAudioEngine::getInstance()->playEffect("music/BeingAttack.wav", false);
+				auto hp1 = HPpt1->getPercentage();
+				if (player1_defence) {
+					hp1 -= 5;
+				}
+				else {
+					hp1 -= 10;
+					player_dead(player1, lastkey2, player1Dead, player1Idle);
+				}
+				auto mpAction = ProgressTo::create(0.1, hp1);
+				HPpt1->runAction(mpAction);
 			}
 			else {
 				j++;
@@ -976,6 +994,7 @@ void FightMode::meet(EventCustom * event) {
 		temp2++;
 	}
 }
+
 
 void FightMode::pause() {
 	auto labelReturnGame = Label::createWithSystemFont("Return Game", "Marker Felt", 80);
@@ -993,17 +1012,16 @@ void FightMode::pause() {
 	CCDirector::getInstance()->pause();
 	//CCActionManage
 }
-
 void FightMode::returnGameCallback(Ref* pSender) {
 	flag = 0;
 	this->removeChild(menu);
 	CCDirector::getInstance()->resume();
 }
 void FightMode::reStartCallback(Ref* pSender) {
-	auto fightMode = FightMode::createScene();
-	Director::getInstance()->replaceScene(TransitionSlideInT::create(1, fightMode));
+	//auto fightMode = FightMode::createScene();
+	//Director::getInstance()->replaceScene(TransitionSlideInT::create(1, fightMode));
 }
 void FightMode::returnMenuCallback(Ref* pSender) {
-	auto menuSence = MenuSence::createScene();
-	Director::getInstance()->replaceScene(TransitionSlideInT::create(1, menuSence));
+	//auto menuSence = MenuSence::createScene();
+	//Director::getInstance()->replaceScene(TransitionSlideInT::create(1, menuSence));
 }
