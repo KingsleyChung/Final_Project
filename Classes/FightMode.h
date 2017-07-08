@@ -13,6 +13,13 @@ public:
 	void initAnimation();
 	CREATE_FUNC(FightMode);
 
+	void preloadMusic();
+	void playBgm();
+	void pause();
+	void returnGameCallback(Ref* pSender);
+	void reStartCallback(Ref* pSender);
+	void returnMenuCallback(Ref* pSender);
+
 	void player1AttackByHand(Ref* pSender);
 	void FightMode::player1AttackByLeg(Ref* pSender);
 	void FightMode::player1MoveAnimation();
