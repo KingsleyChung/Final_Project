@@ -1,6 +1,9 @@
 #include "Gamepause.h"
 #include "FightMode.h"
 #include "MenuSence.h"
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
 //传入一个CCrenderTexture 
 //相当于一个正在运行的游戏的截图作为这个暂停对话框的背景 
 //这样就看起来像是对话框在游戏界面之上，一般游戏当中都是这样子写的。
@@ -78,17 +81,17 @@ bool Gamepause::init()
 //继续游戏
 void Gamepause::menuContinueCallback(Object* pSender)
 {
+	SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 	Director::sharedDirector()->popScene();
 }
 //重新开始游戏
 void  Gamepause::menuRestart(Object* pSender)
 {
-	//Director::sharedDirector()->popScene();
 	Director::sharedDirector()->replaceScene(FightMode::createScene());
 }
 //回主界面
 void  Gamepause::menuLogin(Object* pSender)
 {
-	//Director::sharedDirector()->popScene();
+	//SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 	Director::sharedDirector()->replaceScene(MenuSence::createScene());
 }

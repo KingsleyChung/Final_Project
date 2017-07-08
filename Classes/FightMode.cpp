@@ -85,6 +85,7 @@ void FightMode::menuPauseCallback(Object* pSender)
 	this->getParent()->visit();
 	renderTexture->end();
 
+	SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 	//将游戏界面暂停，压入场景堆栈。并切换到GamePause界面
 	Director::sharedDirector()->pushScene(Gamepause::createScene(renderTexture));
 }
