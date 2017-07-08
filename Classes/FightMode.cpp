@@ -459,12 +459,12 @@ void FightMode::update(float f) {
 
 	//Mp补充
 	auto mp1 = MPpt1->getPercentage();
-	mp1 += 0.05;
+	mp1 += 0.1;
 	auto mp1Action = ProgressTo::create(0.1, mp1);
 	MPpt1->runAction(mp1Action);
 
 	auto mp2 = MPpt2->getPercentage();
-	mp2 += 0.05;
+	mp2 += 0.1;
 	auto mp2Action = ProgressTo::create(0.1, mp2);
 	MPpt2->runAction(mp2Action);
 }
@@ -830,9 +830,9 @@ int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool
 		if (player1attackRect.containsPoint(player2->getPosition())) {
 			auto hp = Hp2->getPercentage();
 			if (flag == 3)
-				hp -= 5;
-			else if (flag == 2)
 				hp -= 3;
+			else if (flag == 2)
+				hp -= 1;
 			auto hpAction = ProgressTo::create(0.1, hp);
 			Hp2->runAction(hpAction);
 			flag += 2;
@@ -940,10 +940,10 @@ void FightMode::meet(EventCustom * event) {
 				SimpleAudioEngine::getInstance()->playEffect("music/BeingAttack.wav", false);
 				auto hp2 = HPpt2->getPercentage();
 				if (player2_defence) {
-					hp2 -= 5;
+					hp2 -= 3;
 				}
 				else {
-					hp2 -= 10;
+					hp2 -= 5;
 					player_dead(player2, lastkey1, player2Dead, player2Idle);
 				}
 				auto mpAction = ProgressTo::create(0.1, hp2);
@@ -972,10 +972,10 @@ void FightMode::meet(EventCustom * event) {
 				SimpleAudioEngine::getInstance()->playEffect("music/BeingAttack.wav", false);
 				auto hp1 = HPpt1->getPercentage();
 				if (player1_defence) {
-					hp1 -= 5;
+					hp1 -= 3;
 				}
 				else {
-					hp1 -= 10;
+					hp1 -= 5;
 					player_dead(player1, lastkey2, player1Dead, player1Idle);
 				}
 				auto mpAction = ProgressTo::create(0.1, hp1);
