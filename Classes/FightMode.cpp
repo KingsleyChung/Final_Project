@@ -1,5 +1,6 @@
 ﻿#include "FightMode.h"
 #include "SimpleAudioEngine.h"
+#include "Gamepause.h"
 using namespace CocosDenshion;
 
 USING_NS_CC;
@@ -51,6 +52,12 @@ bool FightMode::init()
 	bg->setScaleX(visibleSize.height / bgy);
 	bg->setScaleY(visibleSize.height / bgy);
 	this->addChild(bg, 0);
+
+	auto pauseLabel = Label::create("Pause", "fonts/arial.ttf", 76);
+	auto pauseMenuItemLabel = MenuItemLabel::create(pauseLabel, CC_CALLBACK_1(Gamepause::scene, this));
+	auto pauseMenu = Menu::create(pauseMenuItemLabel, NULL);
+	pauseMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	this->addChild(pauseMenu, 1);
 
 	initAnimation();
 	//preloadMusic();

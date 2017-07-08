@@ -89,7 +89,7 @@ private:
 
 
 	//控制人物动作特定函数
-	//普通攻击
+	//普通攻�?
 	void update_numHit(float f);
 	int attack(Sprite*, Sprite*, int, bool, bool, bool, bool, ProgressTimer*, ProgressTimer*);
 	void player_attack(Sprite*, Vector<SpriteFrame*>, Vector<SpriteFrame*>);
