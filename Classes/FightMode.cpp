@@ -52,9 +52,7 @@ bool FightMode::init()
 
 	initAnimation();
 	addKeyboardListener();
-	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update), 0.04f, kRepeatForever, 0);
 
 	return true;
 }
@@ -163,6 +161,13 @@ void FightMode::initAnimation() {
 	sp33->setPosition(Vec2(origin.x + Mp2->getContentSize().width + 1000,
 		origin.y + visibleSize.height - sp33->getContentSize().height - 100));
 	addChild(sp33, 0);
+
+	//
+	addKeyboardListener();
+	schedule(schedule_selector(FightMode::update), 0.04f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
+
 
 	// player2静态动画
 	player2Idle.reserve(1);
@@ -516,8 +521,8 @@ void FightMode::update(float f) {
 
 	auto mp2 = Mp2->getPercentage();
 	mp2 += 10;
-	auto mpAction = ProgressTo::create(0.1, mp2);
-	Mp2->runAction(mpAction);
+	auto hpAction = ProgressTo::create(0.1, mp2);
+	Mp2->runAction(hpAction);
 }
 
 //人物移动函数
@@ -569,22 +574,18 @@ void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 
 
 	//zzh
-	case cocos2d::EventKeyboard::KeyCode::KEY_J:
-	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_J:
+	case EventKeyboard::KeyCode::KEY_J:
 		player1_numHit++;
 		player1_attack_1 = true;
 		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_K:
-	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_K:
+	case EventKeyboard::KeyCode::KEY_K:
 		player1_numHit++;
 		player1_attack_2 = true;
 		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_L:
-	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_L:
+	case EventKeyboard::KeyCode::KEY_L:
 		player1_defence = true;
 		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_I:
-	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_I:
+	case EventKeyboard::KeyCode::KEY_I:
 		player1_power = true;
 		break;
 	}
@@ -609,16 +610,16 @@ void FightMode::onKeyReleased1(EventKeyboard::KeyCode code, Event *event) {
 
 
 	//zzh
-	case cocos2d::EventKeyboard::KeyCode::KEY_J:
+	case EventKeyboard::KeyCode::KEY_J:
 		player1_attack_1 = false;
 		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_K:
+	case EventKeyboard::KeyCode::KEY_K:
 		player1_attack_2 = false;
 		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_L:
+	case EventKeyboard::KeyCode::KEY_L:
 		player1_defence = false;
 		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_I:
+	case EventKeyboard::KeyCode::KEY_I:
 		player1_power = false;
 		break;
 	}
@@ -674,7 +675,6 @@ void FightMode::player1Movement(char ADkey, char WSkey) {
 	auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.10f);
 	auto animate2 = Animate::create(animation2);
 	player1->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
-	CCLOG("%s", "dddd");
 }
 
 void FightMode::onKeyPressed2(EventKeyboard::KeyCode code, Event* event) {
@@ -810,10 +810,8 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 	player2->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
 }
 
-
 int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool player1_attack_1, bool player1_attack_2, bool player2_defence, bool player1_power, ProgressTimer* Hp2, ProgressTimer* Mp1) {
 	int flag = 0;
-	CCLOG("%s", "attack");
 	if (player1_numHit > 0) {
 		//人物1用拳+人物2未防御/人物1用脚/人物1用大招
 
@@ -864,7 +862,6 @@ void FightMode::update_numHit(float f) {
 		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
 		auto animate2 = Animate::create(animation2);
 		player1->runAction(Sequence::create(animate1, animate2, NULL));
-		CCLOG("%s", "dddd1234");
 		player2_maxHit++;
 	}
 	else if (flag1 == 2) {
@@ -874,7 +871,6 @@ void FightMode::update_numHit(float f) {
 		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
 		auto animate2 = Animate::create(animation2);
 		player1->runAction(Sequence::create(animate1, animate2, NULL));
-		CCLOG("%s", "dddd");
 		player2_maxHit++;
 	}
 	else if (flag1 == 3) {
