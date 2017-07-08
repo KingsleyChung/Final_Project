@@ -1,4 +1,6 @@
-#include "FightMode.h"
+﻿#include "FightMode.h"
+#include "SimpleAudioEngine.h"
+using namespace CocosDenshion;
 
 USING_NS_CC;
 
@@ -51,13 +53,34 @@ bool FightMode::init()
 	this->addChild(bg, 0);
 
 	initAnimation();
+	//preloadMusic();
+	//playBgm();
 	addKeyboardListener();
+	addCustomListener();
 	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_powerHit), 0.1f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update_powerHit), 0.01f, kRepeatForever, 0);
 
 	return true;
+}
+
+void FightMode::preloadMusic() {
+	auto audio = SimpleAudioEngine::getInstance();
+	audio->preloadBackgroundMusic("music/play1/hand.wav");
+	audio->preloadBackgroundMusic("music/play1/leg.wav");
+	audio->preloadBackgroundMusic("music/play1/qigong.wav");
+	audio->preloadBackgroundMusic("music/play2/hand.wav");
+	audio->preloadBackgroundMusic("music/play2/leg.wav");
+	audio->preloadBackgroundMusic("music/play2/qigong.wav");
+	audio->preloadBackgroundMusic("music/background.wav");
+	audio->preloadBackgroundMusic("music/BeingAttack.wav");
+}
+
+//播放背景音乐
+void FightMode::playBgm() {
+	auto audio = SimpleAudioEngine::getInstance();
+	audio->playBackgroundMusic("music/background.wav", true);
 }
 
 //初始化player1和player2的所有动画
@@ -273,9 +296,9 @@ void FightMode::initAnimation() {
 }
 
 //player1运行气功动画并产生气功精灵移动
-void FightMode::player1AttackByQigong(Ref* pSender) {
+void FightMode::player1AttackByQigong() {
 	auto callBack = CallFunc::create(CC_CALLBACK_0(FightMode::player1QiGong, this));
-	if (player1->getNumberOfRunningActions() == 0) {
+	if (true) {
 		auto animation1 = Animation::createWithSpriteFrames(player1AttackQigong, 0.1f);
 		auto animate1 = Animate::create(animation1);
 		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
@@ -302,22 +325,25 @@ void FightMode::player1QiGong() {
 	float scaleX = visibleSize.width * 0.126 / qigongSize.width;
 	qigong1->setScale(scaleX, scaleX);
 	this->addChild(qigong1, 2);
-	auto animation3 = Animation::createWithSpriteFrames(player1Qigong, 0.15f);
+	auto animation3 = Animation::createWithSpriteFrames(player1Qigong, 0.23f);
 	auto animate3 = Animate::create(animation3);
-	auto moveBy = MoveBy::create(0.8, Vec2(600, 0));
-	if (lastkey1 == 'A')
-		moveBy = MoveBy::create(0.8, Vec2(-600, 0));
-	else
-		moveBy = MoveBy::create(0.8, Vec2(600, 0));
+	auto moveBy = MoveBy::create(1.66, Vec2(visibleSize.width, 0));
+	if (lastkey1 == 'A') {
+		moveBy = MoveBy::create(1.66, Vec2(-visibleSize.width, 0));
+	}
+	else {
+		moveBy = MoveBy::create(1.66, Vec2(visibleSize.width, 0));
+	}
 	auto spawn = Spawn::createWithTwoActions(animate3, moveBy);
 	auto fadeout = FadeOut::create(0.01f);
 	qigong1->runAction(Sequence::create(spawn, fadeout, NULL));
+	player1QiGongNumber.push_back(qigong1);
 }
 
 //player2运行气功动画并产生气功精灵移动
-void FightMode::player2AttackByQigong(Ref* pSender) {
+void FightMode::player2AttackByQigong() {
 	auto callBack = CallFunc::create(CC_CALLBACK_0(FightMode::player2QiGong, this));
-	if (player2->getNumberOfRunningActions() == 0) {
+	if (true) {
 		auto animation1 = Animation::createWithSpriteFrames(player2AttackQigong, 0.1f);
 		auto animate1 = Animate::create(animation1);
 		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
@@ -350,14 +376,17 @@ void FightMode::player2QiGong() {
 	this->addChild(qigong2, 2);
 	auto animation3 = Animation::createWithSpriteFrames(player2Qigong, 0.3f);
 	auto animate3 = Animate::create(animation3);
-	auto moveBy = MoveBy::create(1.2, Vec2(600, 0));
-	if (lastkey2 == 'A')
-		moveBy = MoveBy::create(1.2, Vec2(-600, 0));
-	else
-		moveBy = MoveBy::create(1.2, Vec2(600, 0));
+	auto moveBy = MoveBy::create(1.3, Vec2(visibleSize.width, 0));
+	if (lastkey2 == 'A') {
+		moveBy = MoveBy::create(1.3, Vec2(-visibleSize.width, 0));
+	}
+	else {
+		moveBy = MoveBy::create(1.5, Vec2(visibleSize.width, 0));
+	}
 	auto spawn = Spawn::createWithTwoActions(animate3, moveBy);
 	auto fadeout = FadeOut::create(0.01f);
 	qigong2->runAction(Sequence::create(spawn, fadeout, NULL));
+	player2QiGongNumber.push_back(qigong2);
 }
 
 void FightMode::update(float f) {
@@ -749,6 +778,13 @@ void FightMode::update_numHit(float f) {
 
 	player1_numHit = 0;
 	player2_numHit = 0;
+
+	if (player1_power) {
+		player1AttackByQigong();
+	}
+	if (player2_power) {
+		player2AttackByQigong();
+	}
 }
 //公有判断攻击函数
 int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool player1_attack_1, bool player1_attack_2, bool player2_defence, bool player1_power, ProgressTimer* Hp2, ProgressTimer* Mp1) {
@@ -792,6 +828,35 @@ void FightMode::player_attack(Sprite* player, Vector<SpriteFrame*> player_action
 	player->runAction(Sequence::create(animate1, animate2, NULL));
 }
 
+
+//监听气功与玩家的位置
+void FightMode::update_powerHit(float f) {
+	// 分发自定义事件
+	EventCustom e("meet");
+	_eventDispatcher->dispatchEvent(&e);
+	//power_attack(player1, player2, qigong1, qigong2, player1_power, player2_defence, Hp2, Mp1);
+
+	std::list<Sprite*>::iterator i = player1QiGongNumber.begin();
+	std::list<Sprite*>::iterator j = player2QiGongNumber.begin();
+	int count1 = player1QiGongNumber.size();
+	int count2 = player2QiGongNumber.size();
+
+	while (count1--)
+	{
+		if ((*i)->getPositionX() > visibleSize.width || (*i)->getPositionX() < 0)
+			i = player1QiGongNumber.erase(i);
+		else
+			i++;
+	}
+
+	while (count2--)
+	{
+		if ((*j)->getPositionX() > visibleSize.width || (*j)->getPositionX() < 0)
+			j = player2QiGongNumber.erase(j);
+		else
+			j++;
+	}
+}
 
 
 //1.0秒内被击中三次就弹飞
@@ -849,4 +914,82 @@ int FightMode::power_attack(Sprite* player1, Sprite* player2, Sprite* qigong1, S
 	}
 
 	return flag;
+}
+
+// 添加自定义监听器
+void FightMode::addCustomListener() {
+	auto dispatcher = Director::getInstance()->getEventDispatcher();
+	auto meetListener = EventListenerCustom::create("meet", CC_CALLBACK_1(FightMode::meet, this));
+	dispatcher->addEventListenerWithFixedPriority(meetListener, 1);
+}
+
+void FightMode::meet(EventCustom * event) {
+	//判断player1是否击中player2
+	int temp = 0;
+	std::list<Sprite*>::iterator i = player1QiGongNumber.begin();
+	for (; i != player1QiGongNumber .end();) {
+		if ((*i)->getPositionY() - player2->getPositionY() <= 70 && (*i)->getPositionY() - player2->getPositionY() >= -70) {
+			if ((*i)->getPositionX() - player2->getPositionX() <= 16 && (*i)->getPositionX() - player2->getPositionX() >= -16) {
+				player2->runAction(Sequence::create(Animate::create(Animation::createWithSpriteFrames(player2BeingAttacked, 0.05f, 1)), nullptr));
+				auto fadeout = FadeOut::create(0.01f);
+				(*i)->runAction(fadeout);
+				i = player1QiGongNumber.erase(i);
+			}
+			else {
+				i++;
+			}
+		}
+		else {
+			i++;
+		}
+		temp++;
+	}
+
+	//判断player2是否击中player1
+	int temp2 = 0;
+	std::list<Sprite*>::iterator j = player2QiGongNumber.begin();
+	for (; j != player2QiGongNumber.end();) {
+		if ((*j)->getPositionY() - player1->getPositionY() <= 70 && (*j)->getPositionY() - player1->getPositionY() >= -70) {
+			if ((*j)->getPositionX() - player1->getPositionX() <= 16 && (*j)->getPositionX() - player1->getPositionX() >= -16) {
+				player1->runAction(Sequence::create(Animate::create(Animation::createWithSpriteFrames(player1BeingAttacked, 0.05f, 1)), nullptr));
+				auto fadeout = FadeOut::create(0.01f);
+				(*j)->runAction(fadeout);
+				j = player2QiGongNumber.erase(j);
+			}
+			else {
+				j++;
+			}
+		}
+		else {
+			j++;
+		}
+		temp2++;
+	}
+}
+
+void FightMode::pause() {
+	//auto labelReturnGame = Label::createWithSystemFont("Return Game", "Marker Felt", 80);
+	//auto labelReStart = Label::createWithSystemFont("ReStart", "Marker Felt", 80);
+	//auto labelReturnMenu = Label::createWithSystemFont("Return Menu", "Marker Felt", 80);
+	//auto menuItem1 = MenuItemLabel::create(labelReturnGame, CC_CALLBACK_1(FightMode::returnGameCallback, this));
+	//auto menuItem2 = MenuItemLabel::create(labelReStart, CC_CALLBACK_1(FightMode::reStartCallback, this));
+	//auto menuItem3 = MenuItemLabel::create(labelReturnMenu, CC_CALLBACK_1(FightMode::returnMenuCallback, this));
+	//menuItem1->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 3 / 5);
+	//menuItem2->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 2 / 5);
+	//menuItem3->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 1 / 5);
+	//auto menu = Menu::create(menuItem1,menuItem2, menuItem3, NULL);
+	//menu->setPosition((Vec2::ZERO));
+	//this->addChild(menu, 3);
+	//CCDirector::getInstance()->pause();
+	//CCActionManage
+}
+
+void FightMode::returnGameCallback(Ref* pSender) {
+
+}
+void FightMode::reStartCallback(Ref* pSender) {
+
+}
+void FightMode::returnMenuCallback(Ref* pSender) {
+
 }

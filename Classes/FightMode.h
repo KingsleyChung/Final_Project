@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 USING_NS_CC;
-
+using namespace std;
 class FightMode : public cocos2d::Layer
 {
 public:
@@ -13,22 +13,18 @@ public:
 	void initAnimation();
 	CREATE_FUNC(FightMode);
 
-	void player1AttackByHand(Ref* pSender);
-	void FightMode::player1AttackByLeg(Ref* pSender);
-	void FightMode::player1MoveAnimation();
-	void FightMode::player1WouldDead(Ref* pSender);
-	void FightMode::player1WouldDefense(Ref* pSender);
-	void FightMode::player1AttackByQigong(Ref* pSender);
+	void FightMode::player1AttackByQigong();
 	void player1QiGong();
 
-	void player2AttackByHand(Ref* pSender);
-	void FightMode::player2AttackByLeg(Ref* pSender);
-	void FightMode::player2MoveAnimation(Ref* pSender);
-	void FightMode::player2WouldDead(Ref* pSender);
-	void FightMode::player2WouldDefense(Ref* pSender);
-	void FightMode::player2AttackByQigong(Ref* pSender);
+	void FightMode::player2AttackByQigong();
 	void FightMode::player2QiGong();
 
+	void preloadMusic();
+	void playBgm();
+	void pause();
+	void returnGameCallback(Ref* pSender);
+	void reStartCallback(Ref* pSender);
+	void returnMenuCallback(Ref* pSender);
 
 private:
 	//画面更新
@@ -49,6 +45,7 @@ private:
 	Vector<SpriteFrame*> player1BeingAttacked;
 	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player1Defense;
+	list<Sprite*> player1QiGongNumber;
 	bool player1IsDefend;
 
 	//palyer2动画
@@ -63,7 +60,13 @@ private:
 	Vector<SpriteFrame*> player2BeingAttacked;
 	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player2Defense;
+	list<Sprite*> player2QiGongNumber;
 	bool player2IsDefend;
+
+	// 添加自定义监听器
+	void addCustomListener();
+	void meet(EventCustom * event);
+
 
 	//人物移动相关变量
 	char player1ADMovekey;
