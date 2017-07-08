@@ -31,12 +31,12 @@ public:
 
 
 private:
-	//鐢婚潰鏇存柊
+	//画面更新
 	Size visibleSize;
 	void update(float f);
 	int x_num;
 	int y_num;
-	//player1鍔ㄧ敾
+	//player1动画
 	Sprite * player1;
 	Sprite * qigong1;
 	Vector<SpriteFrame*> player1Idle;
@@ -45,11 +45,11 @@ private:
 	Vector<SpriteFrame*> player1AttackQigong;
 	Vector<SpriteFrame*> player1Move;
 	Vector<SpriteFrame*> player1Dead;
-	Vector<SpriteFrame*> player1Qigong;//姘斿姛褰㈢姸鍙樺寲鍔ㄧ敾
+	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player1Defense;
 	bool player1IsDefend;
 
-	//palyer2鍔ㄧ敾
+	//palyer2动画
 	Sprite * player2;
 	Sprite * qigong2;
 	Vector<SpriteFrame*> player2Idle;
@@ -58,11 +58,11 @@ private:
 	Vector<SpriteFrame*> player2AttackQigong;
 	Vector<SpriteFrame*> player2Move;
 	Vector<SpriteFrame*> player2Dead;
-	Vector<SpriteFrame*> player2Qigong;//姘斿姛褰㈢姸鍙樺寲鍔ㄧ敾
+	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player2Defense;
 	bool player2IsDefend;
 
-	//浜虹墿绉诲姩鐩稿叧鍙橀噺
+	//人物移动相关变量
 	char player1ADMovekey;
 	char player1WSMovekey;
 	char lastkey1;
@@ -82,12 +82,12 @@ private:
 	void onKeyReleased2(EventKeyboard::KeyCode code, Event *event);
 
 
-	//鎺у埗浜虹墿鍔ㄤ綔鐗瑰畾鍑芥暟
+	//控制人物动作特定函数
 	void update_numHit(float f);
 	void update_maxHit(float f);
 	int attack(Sprite*, Sprite*, int, bool, bool, bool, bool, ProgressTimer*, ProgressTimer*);
 	int power_attack();
-	//浜虹墿鎿嶄綔鐩稿叧鍙橀噺
+	//人物操作相关变量
 	int player1_maxHit = 0;
 	int player1_numHit = 0;
 	bool player1_attack_1 = false;
