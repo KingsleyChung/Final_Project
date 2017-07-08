@@ -55,6 +55,7 @@ bool FightMode::init()
 	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update_powerHit), 0.1f, kRepeatForever, 0);
 
 	return true;
 }
@@ -837,12 +838,12 @@ int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool
 		Rect player1attackRect = Rect(
 			player1Rect.getMinX(),
 			player1Rect.getMinY(),
-			player1Rect.getMaxX() - player1Rect.getMinX() + 10,
+			player1Rect.getMaxX() - player1Rect.getMinX(),
 			player1Rect.getMaxY() - player1Rect.getMinY()
 		);
+
 		if (player1attackRect.containsPoint(player2->getPosition())) {
 			auto hp = Hp2->getPercentage();
-			auto mp = Mp1->getPercentage();
 			if (flag == 3)
 				hp -= 5;
 			else if (flag == 2)
@@ -855,9 +856,19 @@ int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool
 	return flag;
 }
 
+int FightMode::power_attack(Sprite* player1, Sprite* player2, Sprite* qigong1, Sprite* qigong2, bool player1_power, bool player2_defence, ProgressTimer* Hp2, ProgressTimer* Mp1) {
+	int flag = 0;
+
+	if (player1_power) {
+		flag = 1;
+
+	}
+ 
+	return flag;
+}
+
 //0.1秒内只能攻击一次
 void FightMode::update_numHit(float f) {
-
 	int flag1 = attack(player1, player2, player1_numHit, player1_attack_1, player1_attack_2, player2_defence, player1_power, Hp2, Mp1);
 	int flag2 = attack(player2, player1, player2_numHit, player2_attack_1, player2_attack_2, player1_defence, player2_power, Hp1, Mp2);
 	//执行人物1的动画
@@ -918,6 +929,11 @@ void FightMode::update_numHit(float f) {
 	player2_numHit = 0;
 }
 
+//0.1秒内只能发一次大招
+void FightMode::update_powerHit(float f) {
+	power_attack(player1, player2, qigong1, qigong2, player1_power, player2_defence, Hp2, Mp1);
+}
+
 //1.0秒内被击中三次就弹飞
 void FightMode::update_maxHit(float f) {
 	if (player2_maxHit > 3) {
@@ -937,14 +953,14 @@ void FightMode::player1_dead() {
 	auto pos = player2->getPosition();
 	int dis = 0;
 	if (lastkey2 == 'A') {
-		if (pos.x - 300 >= 0)
-			dis = -300;
+		if (pos.x - 200 >= 0)
+			dis = -200;
 		//else
 			//dis = -pos.x;
 	}
 	else {
-		if (pos.x + 300 <= visibleSize.width)
-			dis = 300;
+		if (pos.x + 200 <= visibleSize.width)
+			dis = 200;
 		//else
 			//dis = visibleSize.width - pos.x;
 	}
@@ -961,14 +977,14 @@ void FightMode::player2_dead() {
 	auto pos = player2->getPosition();
 	int dis = 0;
 	if (lastkey1 == 'A') {
-		if (pos.x - 300 >= 0)
-			dis = -300;
+		if (pos.x - 200 >= 0)
+			dis = -200;
 		//else
 			//dis = -pos.x;
 	}
 	else {
-		if (pos.x + 300 <= visibleSize.width)
-			dis = 300;
+		if (pos.x + 200 <= visibleSize.width)
+			dis = 200;
 		//else
 			//dis = visibleSize.width - pos.x;
 	}
