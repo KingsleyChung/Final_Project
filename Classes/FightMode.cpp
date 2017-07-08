@@ -53,7 +53,7 @@ bool FightMode::init()
 	initAnimation();
 	addKeyboardListener();
 	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update_numHit), 0.5f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_powerHit), 0.1f, kRepeatForever, 0);
 
@@ -767,12 +767,12 @@ int FightMode::power_attack(Sprite* player1, Sprite* player2, Sprite* qigong1, S
 	return flag;
 }
 
-//0.1秒内只能攻击一次
+//0.5秒内只能攻击一次
 void FightMode::update_numHit(float f) {
 	int flag1 = attack(player1, player2, player1_numHit, player1_attack_1, player1_attack_2, player2_defence, player1_power, Hp2, Mp1);
 	int flag2 = attack(player2, player1, player2_numHit, player2_attack_1, player2_attack_2, player1_defence, player2_power, Hp1, Mp2);
 	//执行人物1的动画
-	if (this->getChildByTag(01) == 0 && this->getChildByTag(03) == 0) {
+	if (player1->getNumberOfRunningActions() == 1) {
 		if (flag1 % 2 == 1) {
 			//拳打
 			auto animation1 = Animation::createWithSpriteFrames(player1AttackHand, 0.1f);
@@ -803,7 +803,7 @@ void FightMode::update_numHit(float f) {
 	}
 		
 	//执行人物2的动画
-	if (this->getChildByTag(02) == 0 && this->getChildByTag(04) == 0) {
+	if (player2->getNumberOfRunningActions() == 1) {
 		if (flag2 % 2 == 1) {
 			//拳打
 			auto animation1 = Animation::createWithSpriteFrames(player2AttackHand, 0.1f);
