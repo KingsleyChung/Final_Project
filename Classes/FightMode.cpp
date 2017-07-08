@@ -50,6 +50,189 @@ bool FightMode::init()
 	bg->setScaleY(visibleSize.height / bgy);
 	this->addChild(bg, 0);
 
+	////hp��
+	//Sprite* HPMP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(7, 14, 1414, 275)));
+	//Sprite* HP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 57, 24, 41)));
+	//Sprite* MP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 184, 24, 41)));
+	//Sprite* HPMP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(7, 293, 1414, 275)));
+	//Sprite* HP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 57, 24, 41)));
+	//Sprite* MP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 184, 24, 41)));
+
+	////ʹ��hp������progressBar
+	//HPpt1 = ProgressTimer::create(HP1);
+	//HPpt1->setScale(0.25);
+	//HPpt1->setScaleX(11.7);
+	//HPpt1->setAnchorPoint(Vec2(0, 0));
+	//HPpt1->setType(ProgressTimerType::BAR);
+	//HPpt1->setBarChangeRate(Point(1, 0));
+	//HPpt1->setMidpoint(Point(0, 1));
+	//HPpt1->setPercentage(100);
+	//HPpt1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width + 237 * 0.23 + 1, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.134));
+	//addChild(HPpt1, 1);
+	//MPpt1 = ProgressTimer::create(MP1);
+	//MPpt1->setScale(0.25);
+	//MPpt1->setScaleX(11.7);
+	//MPpt1->setAnchorPoint(Vec2(0, 0));
+	//MPpt1->setType(ProgressTimerType::BAR);
+	//MPpt1->setBarChangeRate(Point(1, 0));
+	//MPpt1->setMidpoint(Point(0, 1));
+	//MPpt1->setPercentage(100);
+	//MPpt1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width + 237 * 0.23 + 1, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.24));
+	//addChild(MPpt1, 1);
+
+	//HPMP1->setAnchorPoint(Vec2(0, 0));
+	//HPMP1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width * 0.5, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.3));
+	//HPMP1->setScale(0.25);
+	//addChild(HPMP1, 0);
+
+
+	//HPpt2 = ProgressTimer::create(HP2);
+	//HPpt2->setScale(0.25);
+	//HPpt2->setScaleX(11.7);
+	//HPpt2->setAnchorPoint(Vec2(0, 0));
+	//HPpt2->setType(ProgressTimerType::BAR);
+	//HPpt2->setBarChangeRate(Point(1, 0));
+	//HPpt2->setMidpoint(Point(1, 0));
+	//HPpt2->setPercentage(100);
+	//HPpt2->setPosition(Vec2(visibleSize.width - (HPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.134));
+	//addChild(HPpt2, 1);
+	//MPpt2 = ProgressTimer::create(MP2);
+	//MPpt2->setScale(0.25);
+	//MPpt2->setScaleX(11.7);
+	//MPpt2->setAnchorPoint(Vec2(0, 0));
+	//MPpt2->setType(ProgressTimerType::BAR);
+	//MPpt2->setBarChangeRate(Point(0, 1));
+	//MPpt2->setMidpoint(Point(0, 1));
+	//MPpt2->setPercentage(100);
+	//MPpt2->setPosition(Vec2(visibleSize.width - (MPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.24));
+	//addChild(MPpt2, 1);
+
+	//HPMP2->setAnchorPoint(Vec2(0, 0));
+	//HPMP2->setPosition(Vec2(visibleSize.width - (origin.x + HPpt1->getContentSize().width + HPMP2->getContentSize().width * 0.24) + 4, origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.3));
+	//HPMP2->setScale(0.25);
+	//addChild(HPMP2, 0);
+
+	/*auto hp = HPpt2->getPercentage();
+	hp = (hp - 10 >= 0) ? hp - 10 : 0;
+	CCProgressTo *progress = CCProgressTo::create(2, hp);
+	HPpt2->runAction(progress);*///����δ��������Ҫ�������Ӽ���Ѫ���ĵط�
+
+	initAnimation();
+	addKeyboardListener();
+	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update_powerHit), 0.1f, kRepeatForever, 0);
+
+	return true;
+}
+
+//初始化player1和player2的所有动�?
+void FightMode::initAnimation() {
+	//创建一张玩�?的贴�?
+	auto texture1 = Director::getInstance()->getTextureCache()->addImage("player1/firzen_0.png");
+	//从贴图中以像素单位切割，创建关键�?
+	auto frame1 = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(81 * 6, 0, 81, 81)));
+	//使用第一帧创建精�?
+	player1 = Sprite::createWithSpriteFrame(frame1);
+	player1->setPosition(Vec2(visibleSize.width / 4 + origin.x, origin.y + player1->getContentSize().height + 42));
+	//设置缩放比例
+	Size player1Size = player1->getContentSize();
+	float scaleX = visibleSize.width * 0.126 / player1Size.width;
+	player1->setScale(scaleX, scaleX);
+	this->addChild(player1, 2);
+
+	// player1静态动�?
+	player1Idle.reserve(1);
+	player1Idle.pushBack(frame1);
+
+	//创建一张玩�?的贴�?
+	auto texture2 = Director::getInstance()->getTextureCache()->addImage("player2/woody_0.png");
+	//从贴图中以像素单位切割，创建关键�?
+	auto frame2 = SpriteFrame::createWithTexture(texture2, CC_RECT_PIXELS_TO_POINTS(Rect(81 * 6, 0, 81, 81)));
+	//使用第一帧创建精�?
+	player2 = Sprite::createWithSpriteFrame(frame2);
+	player2->setPosition(Vec2(3 * visibleSize.width / 4 + origin.x, origin.y + player2->getContentSize().height + 30));
+	player2->setFlippedX(true);
+
+	//设置缩放比例
+	Size player2Size = player2->getContentSize();
+	float scale2X = visibleSize.width * 0.126 / player2Size.width;
+	player2->setScale(scale2X, scale2X);
+	this->addChild(player2, 2);
+
+
+	////hp�?
+	//Sprite* sp00 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
+	//Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
+	//Sprite* sp11 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
+	//Sprite* sp1 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
+	//Sprite* sp22 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
+	//Sprite* sp2 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
+	//Sprite* sp33 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
+	//Sprite* sp3 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
+
+	////使用hp条设置progressBar
+	//Hp1 = ProgressTimer::create(sp0);
+	//Hp1->setScaleX(90);
+	//Hp1->setAnchorPoint(Vec2(0, 0));
+	//Hp1->setType(ProgressTimerType::BAR);
+	//Hp1->setBarChangeRate(Point(1, 0));
+	//Hp1->setMidpoint(Point(0, 1));
+	//Hp1->setPercentage(100);
+	//Hp1->setPosition(Vec2(origin.x + 14 * Hp1->getContentSize().width,
+	//	origin.y + visibleSize.height - 2 * Hp1->getContentSize().height));
+	//addChild(Hp1, 1);
+	//sp00->setAnchorPoint(Vec2(0, 0));
+	//sp00->setPosition(Vec2(origin.x + Hp1->getContentSize().width,
+	//	origin.y + visibleSize.height - sp00->getContentSize().height));
+	//addChild(sp00, 0);
+
+	//Hp2 = ProgressTimer::create(sp1);
+	//Hp2->setScaleX(90);
+	//Hp2->setAnchorPoint(Vec2(0, 0));
+	//Hp2->setType(ProgressTimerType::BAR);
+	//Hp2->setBarChangeRate(Point(1, 0));
+	//Hp2->setMidpoint(Point(0, 1));
+	//Hp2->setPercentage(100);
+	//Hp2->setPosition(Vec2(origin.x + 14 * Hp2->getContentSize().width + 650,
+	//	origin.y + visibleSize.height - 2 * Hp2->getContentSize().height));
+	//addChild(Hp2, 1);
+	//sp11->setAnchorPoint(Vec2(0, 0));
+	//sp11->setPosition(Vec2(origin.x + Hp2->getContentSize().width + 650,
+	//	origin.y + visibleSize.height - sp11->getContentSize().height));
+	//addChild(sp11, 0);
+
+	//Mp1 = ProgressTimer::create(sp2);
+	//Mp1->setScaleX(90);
+	//Mp1->setAnchorPoint(Vec2(0, 0));
+	//Mp1->setType(ProgressTimerType::BAR);
+	//Mp1->setBarChangeRate(Point(1, 0));
+	//Mp1->setMidpoint(Point(0, 1));
+	//Mp1->setPercentage(100);
+	//Mp1->setPosition(Vec2(origin.x + 14 * Mp1->getContentSize().width,
+	//	origin.y + visibleSize.height - 2 * Mp1->getContentSize().height - 100));
+	//addChild(Mp1, 1);
+	//sp22->setAnchorPoint(Vec2(0, 0));
+	//sp22->setPosition(Vec2(origin.x + Mp1->getContentSize().width,
+	//	origin.y + visibleSize.height - sp22->getContentSize().height - 100));
+	//addChild(sp22, 0);
+
+	//Mp2 = ProgressTimer::create(sp3);
+	//Mp2->setScaleX(90);
+	//Mp2->setAnchorPoint(Vec2(0, 0));
+	//Mp2->setType(ProgressTimerType::BAR);
+	//Mp2->setBarChangeRate(Point(1, 0));
+	//Mp2->setMidpoint(Point(0, 1));
+	//Mp2->setPercentage(100);
+	//Mp2->setPosition(Vec2(origin.x + 14 * Mp2->getContentSize().width + 650,
+	//	origin.y + visibleSize.height - 2 * Mp2->getContentSize().height - 100));
+	//addChild(Mp2, 1);
+	//sp33->setAnchorPoint(Vec2(0, 0));
+	//sp33->setPosition(Vec2(origin.x + Mp2->getContentSize().width + 650,
+	//	origin.y + visibleSize.height - sp33->getContentSize().height - 100));
+	//addChild(sp33, 0);
+
 	//hp��
 	Sprite* HPMP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(7, 14, 1414, 275)));
 	Sprite* HP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 57, 24, 41)));
@@ -111,127 +294,6 @@ bool FightMode::init()
 	HPMP2->setPosition(Vec2(visibleSize.width - (origin.x + HPpt1->getContentSize().width + HPMP2->getContentSize().width * 0.24) + 4, origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.3));
 	HPMP2->setScale(0.25);
 	addChild(HPMP2, 0);
-
-	/*auto hp = HPpt2->getPercentage();
-	hp = (hp - 10 >= 0) ? hp - 10 : 0;
-	CCProgressTo *progress = CCProgressTo::create(2, hp);
-	HPpt2->runAction(progress);*///����δ��������Ҫ�������Ӽ���Ѫ���ĵط�
-
-	initAnimation();
-	addKeyboardListener();
-	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_powerHit), 0.1f, kRepeatForever, 0);
-
-	return true;
-}
-
-//初始化player1和player2的所有动�?
-void FightMode::initAnimation() {
-	//创建一张玩�?的贴�?
-	auto texture1 = Director::getInstance()->getTextureCache()->addImage("player1/firzen_0.png");
-	//从贴图中以像素单位切割，创建关键�?
-	auto frame1 = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(81 * 6, 0, 81, 81)));
-	//使用第一帧创建精�?
-	player1 = Sprite::createWithSpriteFrame(frame1);
-	player1->setPosition(Vec2(visibleSize.width / 4 + origin.x, origin.y + player1->getContentSize().height + 42));
-	//设置缩放比例
-	Size player1Size = player1->getContentSize();
-	float scaleX = visibleSize.width * 0.126 / player1Size.width;
-	player1->setScale(scaleX, scaleX);
-	this->addChild(player1, 2);
-
-	// player1静态动�?
-	player1Idle.reserve(1);
-	player1Idle.pushBack(frame1);
-
-	//创建一张玩�?的贴�?
-	auto texture2 = Director::getInstance()->getTextureCache()->addImage("player2/woody_0.png");
-	//从贴图中以像素单位切割，创建关键�?
-	auto frame2 = SpriteFrame::createWithTexture(texture2, CC_RECT_PIXELS_TO_POINTS(Rect(81 * 6, 0, 81, 81)));
-	//使用第一帧创建精�?
-	player2 = Sprite::createWithSpriteFrame(frame2);
-	player2->setPosition(Vec2(3 * visibleSize.width / 4 + origin.x, origin.y + player2->getContentSize().height + 30));
-	player2->setFlippedX(true);
-
-	//设置缩放比例
-	Size player2Size = player2->getContentSize();
-	float scale2X = visibleSize.width * 0.126 / player2Size.width;
-	player2->setScale(scale2X, scale2X);
-	this->addChild(player2, 2);
-
-
-	//hp�?
-	Sprite* sp00 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp11 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp1 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp22 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp2 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp33 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp3 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-
-	//使用hp条设置progressBar
-	Hp1 = ProgressTimer::create(sp0);
-	Hp1->setScaleX(90);
-	Hp1->setAnchorPoint(Vec2(0, 0));
-	Hp1->setType(ProgressTimerType::BAR);
-	Hp1->setBarChangeRate(Point(1, 0));
-	Hp1->setMidpoint(Point(0, 1));
-	Hp1->setPercentage(100);
-	Hp1->setPosition(Vec2(origin.x + 14 * Hp1->getContentSize().width,
-		origin.y + visibleSize.height - 2 * Hp1->getContentSize().height));
-	addChild(Hp1, 1);
-	sp00->setAnchorPoint(Vec2(0, 0));
-	sp00->setPosition(Vec2(origin.x + Hp1->getContentSize().width,
-		origin.y + visibleSize.height - sp00->getContentSize().height));
-	addChild(sp00, 0);
-
-	Hp2 = ProgressTimer::create(sp1);
-	Hp2->setScaleX(90);
-	Hp2->setAnchorPoint(Vec2(0, 0));
-	Hp2->setType(ProgressTimerType::BAR);
-	Hp2->setBarChangeRate(Point(1, 0));
-	Hp2->setMidpoint(Point(0, 1));
-	Hp2->setPercentage(100);
-	Hp2->setPosition(Vec2(origin.x + 14 * Hp2->getContentSize().width + 650,
-		origin.y + visibleSize.height - 2 * Hp2->getContentSize().height));
-	addChild(Hp2, 1);
-	sp11->setAnchorPoint(Vec2(0, 0));
-	sp11->setPosition(Vec2(origin.x + Hp2->getContentSize().width + 650,
-		origin.y + visibleSize.height - sp11->getContentSize().height));
-	addChild(sp11, 0);
-
-	Mp1 = ProgressTimer::create(sp2);
-	Mp1->setScaleX(90);
-	Mp1->setAnchorPoint(Vec2(0, 0));
-	Mp1->setType(ProgressTimerType::BAR);
-	Mp1->setBarChangeRate(Point(1, 0));
-	Mp1->setMidpoint(Point(0, 1));
-	Mp1->setPercentage(100);
-	Mp1->setPosition(Vec2(origin.x + 14 * Mp1->getContentSize().width,
-		origin.y + visibleSize.height - 2 * Mp1->getContentSize().height - 100));
-	addChild(Mp1, 1);
-	sp22->setAnchorPoint(Vec2(0, 0));
-	sp22->setPosition(Vec2(origin.x + Mp1->getContentSize().width,
-		origin.y + visibleSize.height - sp22->getContentSize().height - 100));
-	addChild(sp22, 0);
-
-	Mp2 = ProgressTimer::create(sp3);
-	Mp2->setScaleX(90);
-	Mp2->setAnchorPoint(Vec2(0, 0));
-	Mp2->setType(ProgressTimerType::BAR);
-	Mp2->setBarChangeRate(Point(1, 0));
-	Mp2->setMidpoint(Point(0, 1));
-	Mp2->setPercentage(100);
-	Mp2->setPosition(Vec2(origin.x + 14 * Mp2->getContentSize().width + 650,
-		origin.y + visibleSize.height - 2 * Mp2->getContentSize().height - 100));
-	addChild(Mp2, 1);
-	sp33->setAnchorPoint(Vec2(0, 0));
-	sp33->setPosition(Vec2(origin.x + Mp2->getContentSize().width + 650,
-		origin.y + visibleSize.height - sp33->getContentSize().height - 100));
-	addChild(sp33, 0);
 
 	// player2静态动�?
 	player2Idle.reserve(1);
@@ -495,16 +557,26 @@ void FightMode::update(float f) {
 		}
 	}
 
-	//Mp补充
-	auto mp1 = Mp1->getPercentage();
+	////Mp补充
+	//auto mp1 = Mp1->getPercentage();
+	//mp1 += 1;
+	//auto mp1Action = ProgressTo::create(0.1, mp1);
+	//Mp1->runAction(mp1Action);
+
+	//auto mp2 = Mp2->getPercentage();
+	//mp2 += 1;
+	//auto mp2Action = ProgressTo::create(0.1, mp2);
+	//Mp2->runAction(mp2Action);
+
+	auto mp1 = MPpt1->getPercentage();
 	mp1 += 1;
 	auto mp1Action = ProgressTo::create(0.1, mp1);
-	Mp1->runAction(mp1Action);
+	MPpt2->runAction(mp1Action);
 
-	auto mp2 = Mp2->getPercentage();
+	auto mp2 = MPpt2->getPercentage();
 	mp2 += 1;
 	auto mp2Action = ProgressTo::create(0.1, mp2);
-	Mp2->runAction(mp2Action);
+	MPpt2->runAction(mp2Action);
 }
 
 //人物移动函数
