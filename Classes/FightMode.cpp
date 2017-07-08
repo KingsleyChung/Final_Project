@@ -712,6 +712,45 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 
 
 
+//0.1秒内只能攻击一次
+void FightMode::update_numHit(float f) {
+	int flag1 = attack(player1, player2, player1_numHit, player1_attack_1, player1_attack_2, player2_defence, player1_power, HPpt2, MPpt1);
+	int flag2 = attack(player2, player1, player2_numHit, player2_attack_1, player2_attack_2, player1_defence, player2_power, HPpt1, MPpt2);
+	//执行人物1的动画
+	if (flag1 % 2 == 1) {
+		//拳打
+		player_attack(player1, player1AttackHand, player1Idle);
+	}
+	else if (flag1 % 2 == 0 && flag1) {
+		//脚踢
+		player_attack(player1, player1AttackLeg, player1Idle);
+	}
+	if (flag1 > 3) {
+		player2_maxHit++;
+		//对手弹飞
+		player_attack(player2, player2BeingAttacked, player2Idle);
+	}
+
+
+	//执行人物2的动画
+	if (flag2 % 2 == 1) {
+		//拳打
+		player_attack(player2, player2AttackHand, player2Idle);
+	}
+	else if (flag2 % 2 == 0 && flag2) {
+		//脚踢
+		player_attack(player2, player2AttackLeg, player2Idle);
+	}
+	if (flag2 > 3) {
+		player1_maxHit++;
+		//对手弹飞
+		player_attack(player1, player1BeingAttacked, player1Idle);
+	}
+
+	player1_numHit = 0;
+	player2_numHit = 0;
+}
+//公有判断攻击函数
 int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool player1_attack_1, bool player1_attack_2, bool player2_defence, bool player1_power, ProgressTimer* Hp2, ProgressTimer* Mp1) {
 	int flag = 0;
 	if (player1_numHit > 0) {
@@ -744,7 +783,63 @@ int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool
 	}
 	return flag;
 }
+//公有执行攻击函数
+void FightMode::player_attack(Sprite* player, Vector<SpriteFrame*> player_action_1, Vector<SpriteFrame*> player_action_2) {
+	auto animation1 = Animation::createWithSpriteFrames(player_action_1, 0.1f);
+	auto animate1 = Animate::create(animation1);
+	auto animation2 = Animation::createWithSpriteFrames(player_action_2, 0.1f);
+	auto animate2 = Animate::create(animation2);
+	player->runAction(Sequence::create(animate1, animate2, NULL));
+}
 
+
+
+//1.0秒内被击中三次就弹飞
+void FightMode::update_maxHit(float f) {
+	if (player2_maxHit > 3) {
+		//执行死亡动画（人物弹飞）
+		player_dead(player2, lastkey1, player2Dead, player2Idle);
+		player2_maxHit = 0;
+	}
+
+	if (player1_maxHit > 3) {
+		//执行死亡动画（人物弹飞）
+		player_dead(player1, lastkey2, player1Dead, player1Idle);
+		player1_maxHit = 0;
+	}
+}
+//公有执行人物死亡（弹飞）函数
+void FightMode::player_dead(Sprite* player, char lastkey, Vector<SpriteFrame*> player_dead, Vector<SpriteFrame*> player_idle) {
+	auto pos = player->getPosition();
+	int dis = 0;
+	auto player_rect = player->getBoundingBox();
+	if (lastkey == 'A') {
+		if (pos.x - 200 >= player_rect.getMaxX() - player_rect.getMinX())
+			dis = -200;
+		else
+			dis = -pos.x + player_rect.getMaxX() - player_rect.getMinX() - 100;
+	}
+	else {
+		if (pos.x + 200 <= visibleSize.width - (player_rect.getMaxX() - player_rect.getMinX()))
+			dis = 200;
+		else
+			dis = visibleSize.width - pos.x - (player_rect.getMaxX() - player_rect.getMinX()) + 100;
+	}
+	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
+	auto animation1 = Animation::createWithSpriteFrames(player_dead, 0.2f);
+	auto animate1 = Animate::create(animation1);
+	auto animation2 = Animation::createWithSpriteFrames(player_idle, 1.0f);
+	auto animate2 = Animate::create(animation2);
+	auto seq = Sequence::create(Spawn::create(animate1, moveAnimation), nullptr);
+	player->runAction(Sequence::create(seq, animate2, NULL));
+}
+
+
+
+//1.0秒内只能发一次大招
+void FightMode::update_powerHit(float f) {
+	//power_attack(player1, player2, qigong1, qigong2, player1_power, player2_defence, Hp2, Mp1);
+}
 int FightMode::power_attack(Sprite* player1, Sprite* player2, Sprite* qigong1, Sprite* qigong2, bool player1_power, bool player2_defence, ProgressTimer* Hp2, ProgressTimer* Mp1) {
 	int flag = 0;
 
@@ -752,149 +847,6 @@ int FightMode::power_attack(Sprite* player1, Sprite* player2, Sprite* qigong1, S
 		flag = 1;
 
 	}
- 
+
 	return flag;
-}
-
-//0.1秒内只能攻击一次
-void FightMode::update_numHit(float f) {
-	int flag1 = attack(player1, player2, player1_numHit, player1_attack_1, player1_attack_2, player2_defence, player1_power, HPpt2, MPpt1);
-	int flag2 = attack(player2, player1, player2_numHit, player2_attack_1, player2_attack_2, player1_defence, player2_power, HPpt1, MPpt2);
-	//执行人物1的动画
-	if (player1->getNumberOfRunningActions() == 1) {
-		if (flag1 % 2 == 1) {
-			//拳打
-			auto animation1 = Animation::createWithSpriteFrames(player1AttackHand, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			player1->runAction(Sequence::create(animate1, animate2, NULL));
-		}
-		else if (flag1 % 2 == 0 && flag1) {
-			//脚踢
-			auto animation1 = Animation::createWithSpriteFrames(player1AttackLeg, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			player1->runAction(Sequence::create(animate1, animate2, NULL));
-		}
-		if (flag1 > 3) {
-			player2_maxHit++;
-			//对手弹飞
-			auto animation1 = Animation::createWithSpriteFrames(player2BeingAttacked, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			auto action = Sequence::create(animate1, animate2, NULL);
-			player2->runAction(action);
-			action->setTag(02);
-		}
-	}
-		
-
-	//执行人物2的动画
-	if (player2->getNumberOfRunningActions() == 1) {
-		if (flag2 % 2 == 1) {
-			//拳打
-			auto animation1 = Animation::createWithSpriteFrames(player2AttackHand, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			player2->runAction(Sequence::create(animate1, animate2, NULL));
-		}
-		else if (flag2 % 2 == 0 && flag2) {
-			//脚踢
-			auto animation1 = Animation::createWithSpriteFrames(player2AttackLeg, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			player2->runAction(Sequence::create(animate1, animate2, NULL));
-		}
-		if (flag2 > 3) {
-			player1_maxHit++;
-			//对手弹飞
-			auto animation1 = Animation::createWithSpriteFrames(player1BeingAttacked, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			auto action = Sequence::create(animate1, animate2, NULL);
-			player1->runAction(action);
-			action->setTag(01);
-		}
-	}
-
-	player1_numHit = 0;
-	player2_numHit = 0;
-}
-
-//1.0秒内只能发一次大招
-void FightMode::update_powerHit(float f) {
-	//power_attack(player1, player2, qigong1, qigong2, player1_power, player2_defence, Hp2, Mp1);
-}
-
-//1.0秒内被击中三次就弹飞
-void FightMode::update_maxHit(float f) {
-	if (player2_maxHit > 3) {
-		//执行死亡动画（人物弹飞）
-		player2_dead();
-		player2_maxHit = 0;
-	}
-
-	if (player1_maxHit > 3) {
-		//执行死亡动画（人物弹飞）
-		player1_dead();
-		player1_maxHit = 0;
-	}
-}
-
-void FightMode::player1_dead() {
-	auto pos = player2->getPosition();
-	int dis = 0;
-	if (lastkey2 == 'A') {
-		if (pos.x - 200 >= 0)
-			dis = -200;
-		//else
-			//dis = -pos.x;
-	}
-	else {
-		if (pos.x + 200 <= visibleSize.width)
-			dis = 200;
-		//else
-			//dis = visibleSize.width - pos.x;
-	}
-	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
-	auto animation1 = Animation::createWithSpriteFrames(player1Dead, 0.2f);
-	auto animate1 = Animate::create(animation1);
-	auto animation2 = Animation::createWithSpriteFrames(player1Idle, 1.0f);
-	auto animate2 = Animate::create(animation2);
-	auto seq = Sequence::create(Spawn::create(animate1, moveAnimation), nullptr);
-	auto action = Sequence::create(seq, animate2, NULL);
-	player1->runAction(action);
-	action->setTag(03);
-}
-
-void FightMode::player2_dead() {
-	auto pos = player2->getPosition();
-	int dis = 0;
-	if (lastkey1 == 'A') {
-		if (pos.x - 200 >= 0)
-			dis = -200;
-		//else
-			//dis = -pos.x;
-	}
-	else {
-		if (pos.x + 200 <= visibleSize.width)
-			dis = 200;
-		//else
-			//dis = visibleSize.width - pos.x;
-	}
-	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
-	auto animation1 = Animation::createWithSpriteFrames(player2Dead, 0.2f);
-	auto animate1 = Animate::create(animation1);
-	auto animation2 = Animation::createWithSpriteFrames(player2Idle, 1.0f);
-	auto animate2 = Animate::create(animation2);
-	auto seq = Sequence::create(Spawn::create(animate1, moveAnimation), nullptr);
-	auto action = Sequence::create(seq, animate2, NULL);
-	player2->runAction(action);
-	action->setTag(04);
 }

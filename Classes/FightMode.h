@@ -86,10 +86,15 @@ private:
 
 
 	//控制人物动作特定函数
+	//普通攻击
 	void update_numHit(float f);
-	void update_maxHit(float f);
-	void update_powerHit(float f);
 	int attack(Sprite*, Sprite*, int, bool, bool, bool, bool, ProgressTimer*, ProgressTimer*);
+	void player_attack(Sprite*, Vector<SpriteFrame*>, Vector<SpriteFrame*>);
+	//人物弹飞
+	void update_maxHit(float f);
+	void player_dead(Sprite*, char, Vector<SpriteFrame*>, Vector<SpriteFrame*>);
+	//大招攻击
+	void update_powerHit(float f);
 	int power_attack(Sprite*, Sprite*, Sprite*, Sprite*, bool, bool, ProgressTimer*, ProgressTimer*);
 	//人物操作相关变量
 	int player1_maxHit = 0;
@@ -100,7 +105,6 @@ private:
 	bool player1_power = false;
 	cocos2d::ProgressTimer* HPpt1;
 	cocos2d::ProgressTimer* MPpt1;
-	void player1_dead();
 
 	int player2_maxHit = 0;
 	int player2_numHit = 0;
@@ -110,7 +114,6 @@ private:
 	bool player2_power = false;
 	cocos2d::ProgressTimer* HPpt2;
 	cocos2d::ProgressTimer* MPpt2;
-	void player2_dead();
 
 	void addKeyboardListener();
 	Vec2 origin;
