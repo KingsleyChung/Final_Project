@@ -26,8 +26,8 @@ bool FightMode::init()
 		return false;
 	}
 	//变量初始化
-	x_num = 35;
-	y_num = 30;
+	x_num = 28;
+	y_num = 23;
 	player1ADIsMove = false;
 	player1WSIsMove = false;
 	lastkey1 = 'D';
@@ -58,6 +58,7 @@ bool FightMode::init()
 
 	return true;
 }
+
 //初始化player1和player2的所有动画
 void FightMode::initAnimation() {
 	//创建一张玩家1的贴图
@@ -126,11 +127,11 @@ void FightMode::initAnimation() {
 	Hp2->setBarChangeRate(Point(1, 0));
 	Hp2->setMidpoint(Point(0, 1));
 	Hp2->setPercentage(100);
-	Hp2->setPosition(Vec2(origin.x + 14 * Hp2->getContentSize().width + 1000,
+	Hp2->setPosition(Vec2(origin.x + 14 * Hp2->getContentSize().width + 650,
 		origin.y + visibleSize.height - 2 * Hp2->getContentSize().height));
 	addChild(Hp2, 1);
 	sp11->setAnchorPoint(Vec2(0, 0));
-	sp11->setPosition(Vec2(origin.x + Hp2->getContentSize().width + 1000,
+	sp11->setPosition(Vec2(origin.x + Hp2->getContentSize().width + 650,
 		origin.y + visibleSize.height - sp11->getContentSize().height));
 	addChild(sp11, 0);
 
@@ -156,20 +157,13 @@ void FightMode::initAnimation() {
 	Mp2->setBarChangeRate(Point(1, 0));
 	Mp2->setMidpoint(Point(0, 1));
 	Mp2->setPercentage(100);
-	Mp2->setPosition(Vec2(origin.x + 14 * Mp2->getContentSize().width + 1000,
+	Mp2->setPosition(Vec2(origin.x + 14 * Mp2->getContentSize().width + 650,
 		origin.y + visibleSize.height - 2 * Mp2->getContentSize().height - 100));
 	addChild(Mp2, 1);
 	sp33->setAnchorPoint(Vec2(0, 0));
-	sp33->setPosition(Vec2(origin.x + Mp2->getContentSize().width + 1000,
+	sp33->setPosition(Vec2(origin.x + Mp2->getContentSize().width + 650,
 		origin.y + visibleSize.height - sp33->getContentSize().height - 100));
 	addChild(sp33, 0);
-
-	//
-	addKeyboardListener();
-	/*schedule(schedule_selector(FightMode::update), 0.04f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
-	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);*/
-
 
 	// player2静态动画
 	player2Idle.reserve(1);
@@ -535,12 +529,12 @@ void FightMode::update(float f) {
 
 	//Mp补充
 	auto mp1 = Mp1->getPercentage();
-	mp1 += 10;
+	mp1 += 1;
 	auto mp1Action = ProgressTo::create(0.1, mp1);
 	Mp1->runAction(mp1Action);
 
 	auto mp2 = Mp2->getPercentage();
-	mp2 += 10;
+	mp2 += 1;
 	auto mp2Action = ProgressTo::create(0.1, mp2);
 	Mp2->runAction(mp2Action);
 }
@@ -557,7 +551,6 @@ void FightMode::addKeyboardListener() {
 	keyboardListener2->onKeyReleased = CC_CALLBACK_2(FightMode::onKeyReleased2, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener2, player2);
 }
-
 void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 	switch (code)
 	{
@@ -610,7 +603,6 @@ void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 		break;
 	}
 }
-
 void FightMode::onKeyReleased1(EventKeyboard::KeyCode code, Event *event) {
 	switch (code)
 	{
@@ -644,7 +636,6 @@ void FightMode::onKeyReleased1(EventKeyboard::KeyCode code, Event *event) {
 		break;
 	}
 }
-
 void FightMode::player1Movement(char ADkey, char WSkey) {
 	float x_move = 0;
 	float y_move = 0;
@@ -672,11 +663,11 @@ void FightMode::player1Movement(char ADkey, char WSkey) {
 	if (player1WSIsMove) {
 		switch (WSkey) {
 		case 'W':
-			if (player1->getPositionY() + y_num <= 280) {
+			if (player1->getPositionY() + y_num <= 250) {
 				y_move = y_num;
 			}
 			else {
-				y_move = 280 - player1->getPositionY();
+				y_move = 250 - player1->getPositionY();
 			}
 			break;
 		case 'S':
@@ -696,6 +687,7 @@ void FightMode::player1Movement(char ADkey, char WSkey) {
 	auto animate2 = Animate::create(animation2);
 	player1->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
 }
+
 
 void FightMode::onKeyPressed2(EventKeyboard::KeyCode code, Event* event) {
 	switch (code)
@@ -745,7 +737,6 @@ void FightMode::onKeyPressed2(EventKeyboard::KeyCode code, Event* event) {
 		break;
 	}
 }
-
 void FightMode::onKeyReleased2(EventKeyboard::KeyCode code, Event *event) {
 	switch (code)
 	{
@@ -777,7 +768,6 @@ void FightMode::onKeyReleased2(EventKeyboard::KeyCode code, Event *event) {
 		break;
 	}
 }
-
 void FightMode::player2Movement(char ADkey, char WSkey) {
 	float x_move = 0;
 	float y_move = 0;
@@ -805,11 +795,11 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 	if (player2WSIsMove) {
 		switch (WSkey) {
 		case 'W':
-			if (player2->getPositionY() + y_num <= 280) {
+			if (player2->getPositionY() + y_num <= 250) {
 				y_move = y_num;
 			}
 			else {
-				y_move = 280 - player2->getPositionY();
+				y_move = 250 - player2->getPositionY();
 			}
 			break;
 		case 'S':
@@ -829,6 +819,8 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 	auto animate2 = Animate::create(animation2);
 	player2->runAction(Sequence::create(Spawn::create(animate1, move, NULL), animate2, NULL));
 }
+
+
 
 int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool player1_attack_1, bool player1_attack_2, bool player2_defence, bool player1_power, ProgressTimer* Hp2, ProgressTimer* Mp1) {
 	int flag = 0;
@@ -885,9 +877,16 @@ void FightMode::update_numHit(float f) {
 		auto animate2 = Animate::create(animation2);
 		player1->runAction(Sequence::create(animate1, animate2, NULL));
 	}
-	if (flag1 > 3)
+	if (flag1 > 3) {
 		player2_maxHit++;
-
+		//对手弹飞
+		auto animation1 = Animation::createWithSpriteFrames(player2BeingAttacked, 0.1f);
+		auto animate1 = Animate::create(animation1);
+		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
+		auto animate2 = Animate::create(animation2);
+		player2->runAction(Sequence::create(animate1, animate2, NULL));
+	}
+		
 	//执行人物2的动画
 	if (flag2 % 2 == 1) {
 		//拳打
@@ -905,8 +904,15 @@ void FightMode::update_numHit(float f) {
 		auto animate2 = Animate::create(animation2);
 		player2->runAction(Sequence::create(animate1, animate2, NULL));
 	}
-	if (flag2 > 3)
+	if (flag2 > 3) {
 		player1_maxHit++;
+		//对手弹飞
+		auto animation1 = Animation::createWithSpriteFrames(player1BeingAttacked, 0.1f);
+		auto animate1 = Animate::create(animation1);
+		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
+		auto animate2 = Animate::create(animation2);
+		player1->runAction(Sequence::create(animate1, animate2, NULL));
+	}
 
 	player1_numHit = 0;
 	player2_numHit = 0;
@@ -931,12 +937,16 @@ void FightMode::player1_dead() {
 	auto pos = player2->getPosition();
 	int dis = 0;
 	if (lastkey2 == 'A') {
-		if (pos.x - 200 >= 0)
-			dis = -200;
+		if (pos.x - 300 >= 0)
+			dis = -300;
+		//else
+			//dis = -pos.x;
 	}
 	else {
-		if (pos.x + 200 <= visibleSize.width)
-			dis = 200;
+		if (pos.x + 300 <= visibleSize.width)
+			dis = 300;
+		//else
+			//dis = visibleSize.width - pos.x;
 	}
 	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
 	auto animation1 = Animation::createWithSpriteFrames(player1Dead, 0.2f);
@@ -951,12 +961,16 @@ void FightMode::player2_dead() {
 	auto pos = player2->getPosition();
 	int dis = 0;
 	if (lastkey1 == 'A') {
-		if (pos.x - 200 >= 0)
-			dis = -200;
+		if (pos.x - 300 >= 0)
+			dis = -300;
+		//else
+			//dis = -pos.x;
 	}
 	else {
-		if (pos.x + 200 <= visibleSize.width)
-			dis = 200;
+		if (pos.x + 300 <= visibleSize.width)
+			dis = 300;
+		//else
+			//dis = visibleSize.width - pos.x;
 	}
 	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
 	auto animation1 = Animation::createWithSpriteFrames(player2Dead, 0.2f);
