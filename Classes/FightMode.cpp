@@ -1,10 +1,7 @@
 ﻿#include "FightMode.h"
 #include "SimpleAudioEngine.h"
-<<<<<<< HEAD
 #include "Gamepause.h"
-=======
 #include "MenuSence.h"
->>>>>>> 5b7a4ca5ad720e0fefbeeede6a3901b08b01d83c
 using namespace CocosDenshion;
 
 USING_NS_CC;
