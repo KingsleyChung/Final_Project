@@ -1,10 +1,7 @@
 ﻿#include "FightMode.h"
 #include "SimpleAudioEngine.h"
-<<<<<<< HEAD
 #include "Gamepause.h"
-=======
 #include "MenuSence.h"
->>>>>>> 5b7a4ca5ad720e0fefbeeede6a3901b08b01d83c
 using namespace CocosDenshion;
 
 USING_NS_CC;
@@ -58,7 +55,7 @@ bool FightMode::init()
 	this->addChild(bg, 0);
 
 	auto pauseLabel = Label::create("Pause", "fonts/arial.ttf", 76);
-	auto pauseMenuItemLabel = MenuItemLabel::create(pauseLabel, CC_CALLBACK_1(Gamepause::scene, this));
+	auto pauseMenuItemLabel = MenuItemLabel::create(pauseLabel, CC_CALLBACK_1(FightMode::menuPauseCallback, this));
 	auto pauseMenu = Menu::create(pauseMenuItemLabel, NULL);
 	pauseMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	this->addChild(pauseMenu, 1);
@@ -75,6 +72,22 @@ bool FightMode::init()
 	schedule(schedule_selector(FightMode::update_powerHit), 0.01f, kRepeatForever, 0);
 
 	return true;
+}
+
+void FightMode::menuPauseCallback(CCObject* pSender)
+{
+	//得到窗口的大小
+	CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
+	CCRenderTexture *renderTexture = CCRenderTexture::create(visibleSize.width, visibleSize.height);
+
+	//遍历当前类的所有子节点信息，画入renderTexture中。
+	//这里类似截图。
+	renderTexture->begin();
+	this->getParent()->visit();
+	renderTexture->end();
+
+	//将游戏界面暂停，压入场景堆栈。并切换到GamePause界面
+	CCDirector::sharedDirector()->pushScene(Gamepause::scene(renderTexture));
 }
 
 void FightMode::preloadMusic() {

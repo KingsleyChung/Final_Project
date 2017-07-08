@@ -19,7 +19,7 @@ CCScene* Gamepause::scene(CCRenderTexture* sqr)
 	CCSprite *back_spr = CCSprite::createWithTexture(sqr->getSprite()->getTexture());  
 	back_spr->setPosition(ccp(visibleSize.width/2,visibleSize.height/2)); //放置位置,这个相对于中心位置。
 	back_spr->setFlipY(true);            //翻转，因为UI坐标和OpenGL坐标不同
-	back_spr->setColor(cocos2d::ccGRAY); //图片颜色变灰色
+	//back_spr->setColor(cocos2d::ccGRAY); //图片颜色变灰色
 	scene->addChild(back_spr);
 
 
@@ -51,7 +51,7 @@ bool Gamepause::init()
 		this,
 		menu_selector(Gamepause::menuContinueCallback));
 
-	pContinueItem->setPosition(ccp( visibleSize.width/2 ,visibleSize.height/2+30));
+	pContinueItem->setPosition(Vec2( visibleSize.width/2 ,visibleSize.height/2+30));
 
 	//重新开始游戏按钮
 	CCMenuItemImage *pRestartItem = CCMenuItemImage::create(
@@ -74,7 +74,7 @@ bool Gamepause::init()
 
 	// create menu, it's an autorelease object
 	CCMenu* pMenu = CCMenu::create(pContinueItem,pRestartItem,pLoginItem,NULL);
-	pMenu->setPosition(CCPointZero);
+	pMenu->setPosition(Vec2(visibleSize.width/2, visibleSize.height/2));
 	this->addChild(pMenu, 2);
 
     return true;
@@ -94,9 +94,3 @@ void  Gamepause::menuLogin(CCObject* pSender)
 {
 	CCDirector::sharedDirector()->replaceScene(MenuSence::createScene());
 }
-
-
-
-
-
-

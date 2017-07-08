@@ -25,6 +25,7 @@ public:
 	void returnGameCallback(Ref* pSender);
 	void reStartCallback(Ref* pSender);
 	void returnMenuCallback(Ref* pSender);
+	void menuPauseCallback(CCObject* pSender);
 
 private:
 	//画面更新
@@ -122,7 +123,7 @@ private:
 	Vec2 origin;
 
 	Menu * menu;//暂停菜单
-	int flag;//空格按次数
+	int flag;//空格按次�?
 };
 
 #endif // __FIGHTMODE_H__
