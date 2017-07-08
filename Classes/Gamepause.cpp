@@ -1,6 +1,9 @@
 #include "Gamepause.h"
 #include "FightMode.h"
 #include "MenuSence.h"
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
 //传入一个CCrenderTexture 
 //相当于一个正在运行的游戏的截图作为这个暂停对话框的背景 
 //这样就看起来像是对话框在游戏界面之上，一般游戏当中都是这样子写的。
@@ -18,7 +21,7 @@ Scene* Gamepause::createScene(RenderTexture* sqr)
 	Sprite *back_spr = Sprite::createWithTexture(sqr->getSprite()->getTexture());  
 	back_spr->setPosition(ccp(visibleSize.width/2,visibleSize.height/2)); //放置位置,这个相对于中心位置。
 	back_spr->setFlipY(true);            //翻转，因为UI坐标和OpenGL坐标不同
-	//back_spr->setColor(cocos2d::GRAY); //图片颜色变灰色
+	//back_spr->setColor(Color3B::GRAY); //图片颜色变灰色
 	scene->addChild(back_spr);
 
 
@@ -39,36 +42,33 @@ bool Gamepause::init()
         return false;
     }
 	//得到窗口的大小
-	Size visibleSize = Director::sharedDirector()->getVisibleSize();
+	Size visibleSize = Director::getInstance()->getVisibleSize();
 	//原点坐标
-	Point origin = Director::sharedDirector()->getVisibleOrigin();
+	Point origin = Director::getInstance()->getVisibleOrigin();
 
 	//继续游戏按钮
 	MenuItemImage *pContinueItem = MenuItemImage::create(
 		"Resume.png",
 		"Resume.png",
-		this,
-		menu_selector(Gamepause::menuContinueCallback));
+		CC_CALLBACK_1(Gamepause::menuContinueCallback, this));
 
-	pContinueItem->setPosition(Vec2( 30 ,visibleSize.height/2-90));
+	pContinueItem->setPosition(Vec2(0 ,visibleSize.height/15));
 
 	//重新开始游戏按钮
 	MenuItemImage *pRestartItem = MenuItemImage::create(
 		"Restart.png",
 		"Restart.png",
-		this,
-		menu_selector(Gamepause::menuRestart));
+		CC_CALLBACK_1(Gamepause::menuRestart, this));
 
-	pRestartItem->setPosition(ccp( visibleSize.width/2 ,visibleSize.height/2-20));
+	pRestartItem->setPosition(ccp(0 ,visibleSize.height/15 - 100));
 
 	//回主界面
 	MenuItemImage *pLoginItem = MenuItemImage::create(
 		"Exit.png",
 		"Exit.png",
-		this,
-		menu_selector(Gamepause::menuLogin));
+		CC_CALLBACK_1(Gamepause::menuLogin, this));
 
-	pLoginItem->setPosition(ccp( visibleSize.width/2 ,visibleSize.height/2-70));
+	pLoginItem->setPosition(ccp(0 ,visibleSize.height/15 - 200));
 
 
 	// create menu, it's an autorelease object
@@ -81,8 +81,8 @@ bool Gamepause::init()
 //继续游戏
 void Gamepause::menuContinueCallback(Object* pSender)
 {
+	SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 	Director::sharedDirector()->popScene();
-
 }
 //重新开始游戏
 void  Gamepause::menuRestart(Object* pSender)

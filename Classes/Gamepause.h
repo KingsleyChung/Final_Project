@@ -7,8 +7,7 @@ class Gamepause : public cocos2d::Layer
 public:
 	static cocos2d::Scene* createScene(RenderTexture* sqr);
 
-    virtual bool init();  
-    //static cocos2d::CCScene* scene(CCRenderTexture* sqr);
+    virtual bool init();
     CREATE_FUNC(Gamepause);
 	//¼ÌÐøÓÎÏ·
 	void menuContinueCallback(Object* pSender);
