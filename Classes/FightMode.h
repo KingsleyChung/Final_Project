@@ -32,7 +32,8 @@ private:
 	void update(float f);
 	int x_num;
 	int y_num;
-	//player1动画
+
+	//palyer1����
 	Sprite * player1;
 	Sprite * qigong1;
 	Vector<SpriteFrame*> player1Idle;
@@ -100,8 +101,8 @@ private:
 	bool player1_attack_2 = false;
 	bool player1_defence = false;
 	bool player1_power = false;
-	cocos2d::ProgressTimer* Hp1;
-	cocos2d::ProgressTimer* Mp1;
+	cocos2d::ProgressTimer* HPpt1;
+	cocos2d::ProgressTimer* MPpt1;
 	void player1_dead();
 
 	int player2_maxHit = 0;
@@ -110,8 +111,8 @@ private:
 	bool player2_attack_2 = false;
 	bool player2_defence = false;
 	bool player2_power = false;
-	cocos2d::ProgressTimer* Hp2;
-	cocos2d::ProgressTimer* Mp2;
+	cocos2d::ProgressTimer* HPpt2;
+	cocos2d::ProgressTimer* MPpt2;
 	void player2_dead();
 
 	void addKeyboardListener();

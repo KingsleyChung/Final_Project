@@ -1,4 +1,4 @@
-#include "FightMode.h"
+﻿#include "FightMode.h"
 #include "SimpleAudioEngine.h"
 using namespace CocosDenshion;
 
@@ -27,7 +27,7 @@ bool FightMode::init()
 	{
 		return false;
 	}
-	//变量初始化
+	//变量初始量
 	x_num = 28;
 	y_num = 23;
 	player1ADIsMove = false;
@@ -85,7 +85,7 @@ void FightMode::playBgm() {
 
 //初始化player1和player2的所有动画
 void FightMode::initAnimation() {
-	//创建一张玩家1的贴图
+	//创建一张玩家的贴图
 	auto texture1 = Director::getInstance()->getTextureCache()->addImage("player1/firzen_0.png");
 	//从贴图中以像素单位切割，创建关键帧
 	auto frame1 = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(81 * 6, 0, 81, 81)));
@@ -102,7 +102,7 @@ void FightMode::initAnimation() {
 	player1Idle.reserve(1);
 	player1Idle.pushBack(frame1);
 
-	//创建一张玩家2的贴图
+	//创建一张玩家的贴图
 	auto texture2 = Director::getInstance()->getTextureCache()->addImage("player2/woody_0.png");
 	//从贴图中以像素单位切割，创建关键帧
 	auto frame2 = SpriteFrame::createWithTexture(texture2, CC_RECT_PIXELS_TO_POINTS(Rect(81 * 6, 0, 81, 81)));
@@ -117,81 +117,72 @@ void FightMode::initAnimation() {
 	player2->setScale(scale2X, scale2X);
 	this->addChild(player2, 2);
 
+	//hp mp条
+	Sprite* HPMP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(7, 14, 1414, 275)));
+	Sprite* HP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 57, 24, 41)));
+	Sprite* MP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 184, 24, 41)));
+	Sprite* HPMP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(7, 293, 1414, 275)));
+	Sprite* HP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 57, 24, 41)));
+	Sprite* MP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 184, 24, 41)));
 
-	//hp条
-	Sprite* sp00 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp11 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp1 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp22 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp2 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-	Sprite* sp33 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp3 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
+	//使用hp mp条设置progressBar
+	HPpt1 = ProgressTimer::create(HP1);
+	HPpt1->setScale(0.25);
+	HPpt1->setScaleX(11.7);
+	HPpt1->setAnchorPoint(Vec2(0, 0));
+	HPpt1->setType(ProgressTimerType::BAR);
+	HPpt1->setBarChangeRate(Point(1, 0));
+	HPpt1->setMidpoint(Point(0, 1));
+	HPpt1->setPercentage(100);
+	HPpt1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width + 237 * 0.23 + 1, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.134));
+	addChild(HPpt1, 1);
+	MPpt1 = ProgressTimer::create(MP1);
+	MPpt1->setScale(0.25);
+	MPpt1->setScaleX(11.7);
+	MPpt1->setAnchorPoint(Vec2(0, 0));
+	MPpt1->setType(ProgressTimerType::BAR);
+	MPpt1->setBarChangeRate(Point(1, 0));
+	MPpt1->setMidpoint(Point(0, 1));
+	MPpt1->setPercentage(100);
+	MPpt1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width + 237 * 0.23 + 1, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.24));
+	addChild(MPpt1, 1);
 
-	//使用hp条设置progressBar
-	Hp1 = ProgressTimer::create(sp0);
-	Hp1->setScaleX(90);
-	Hp1->setAnchorPoint(Vec2(0, 0));
-	Hp1->setType(ProgressTimerType::BAR);
-	Hp1->setBarChangeRate(Point(1, 0));
-	Hp1->setMidpoint(Point(0, 1));
-	Hp1->setPercentage(100);
-	Hp1->setPosition(Vec2(origin.x + 14 * Hp1->getContentSize().width,
-		origin.y + visibleSize.height - 2 * Hp1->getContentSize().height));
-	addChild(Hp1, 1);
-	sp00->setAnchorPoint(Vec2(0, 0));
-	sp00->setPosition(Vec2(origin.x + Hp1->getContentSize().width,
-		origin.y + visibleSize.height - sp00->getContentSize().height));
-	addChild(sp00, 0);
+	HPMP1->setAnchorPoint(Vec2(0, 0));
+	HPMP1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width * 0.5, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.3));
+	HPMP1->setScale(0.25);
+	addChild(HPMP1, 0);
 
-	Hp2 = ProgressTimer::create(sp1);
-	Hp2->setScaleX(90);
-	Hp2->setAnchorPoint(Vec2(0, 0));
-	Hp2->setType(ProgressTimerType::BAR);
-	Hp2->setBarChangeRate(Point(1, 0));
-	Hp2->setMidpoint(Point(0, 1));
-	Hp2->setPercentage(100);
-	Hp2->setPosition(Vec2(origin.x + 14 * Hp2->getContentSize().width + 650,
-		origin.y + visibleSize.height - 2 * Hp2->getContentSize().height));
-	addChild(Hp2, 1);
-	sp11->setAnchorPoint(Vec2(0, 0));
-	sp11->setPosition(Vec2(origin.x + Hp2->getContentSize().width + 650,
-		origin.y + visibleSize.height - sp11->getContentSize().height));
-	addChild(sp11, 0);
 
-	Mp1 = ProgressTimer::create(sp2);
-	Mp1->setScaleX(90);
-	Mp1->setAnchorPoint(Vec2(0, 0));
-	Mp1->setType(ProgressTimerType::BAR);
-	Mp1->setBarChangeRate(Point(1, 0));
-	Mp1->setMidpoint(Point(0, 1));
-	Mp1->setPercentage(100);
-	Mp1->setPosition(Vec2(origin.x + 14 * Mp1->getContentSize().width,
-		origin.y + visibleSize.height - 2 * Mp1->getContentSize().height - 100));
-	addChild(Mp1, 1);
-	sp22->setAnchorPoint(Vec2(0, 0));
-	sp22->setPosition(Vec2(origin.x + Mp1->getContentSize().width,
-		origin.y + visibleSize.height - sp22->getContentSize().height - 100));
-	addChild(sp22, 0);
+	HPpt2 = ProgressTimer::create(HP2);
+	HPpt2->setScale(0.25);
+	HPpt2->setScaleX(11.7);
+	HPpt2->setAnchorPoint(Vec2(0, 0));
+	HPpt2->setType(ProgressTimerType::BAR);
+	HPpt2->setBarChangeRate(Point(1, 0));
+	HPpt2->setMidpoint(Point(1, 0));
+	HPpt2->setPercentage(100);
+	HPpt2->setPosition(Vec2(visibleSize.width - (HPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.134));
+	addChild(HPpt2, 1);
+	MPpt2 = ProgressTimer::create(MP2);
+	MPpt2->setScale(0.25);
+	MPpt2->setScaleX(11.7);
+	MPpt2->setAnchorPoint(Vec2(0, 0));
+	MPpt2->setType(ProgressTimerType::BAR);
+	MPpt2->setBarChangeRate(Point(0, 1));
+	MPpt2->setMidpoint(Point(0, 1));
+	MPpt2->setPercentage(100);
+	MPpt2->setPosition(Vec2(visibleSize.width - (MPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.24));
+	addChild(MPpt2, 1);
 
-	Mp2 = ProgressTimer::create(sp3);
-	Mp2->setScaleX(90);
-	Mp2->setAnchorPoint(Vec2(0, 0));
-	Mp2->setType(ProgressTimerType::BAR);
-	Mp2->setBarChangeRate(Point(1, 0));
-	Mp2->setMidpoint(Point(0, 1));
-	Mp2->setPercentage(100);
-	Mp2->setPosition(Vec2(origin.x + 14 * Mp2->getContentSize().width + 650,
-		origin.y + visibleSize.height - 2 * Mp2->getContentSize().height - 100));
-	addChild(Mp2, 1);
-	sp33->setAnchorPoint(Vec2(0, 0));
-	sp33->setPosition(Vec2(origin.x + Mp2->getContentSize().width + 650,
-		origin.y + visibleSize.height - sp33->getContentSize().height - 100));
-	addChild(sp33, 0);
+	HPMP2->setAnchorPoint(Vec2(0, 0));
+	HPMP2->setPosition(Vec2(visibleSize.width - (origin.x + HPpt1->getContentSize().width + HPMP2->getContentSize().width * 0.24) + 4, origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.3));
+	HPMP2->setScale(0.25);
+	addChild(HPMP2, 0);
 
 	// player2静态动画
 	player2Idle.reserve(1);
 	player2Idle.pushBack(frame2);
+
 
 	// player1手攻击动画
 	player1AttackHand.reserve(4);
@@ -199,35 +190,30 @@ void FightMode::initAnimation() {
 		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(81 * i, 81, 81, 81)));
 		player1AttackHand.pushBack(frame);
 	}
-
 	//player1脚攻击动画
 	player1AttackLeg.reserve(3);
 	for (int i = 0; i < 3; i++) {
 		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(81 * i + 80 * 4, 81, 81, 81)));
 		player1AttackLeg.pushBack(frame);
 	}
-
 	//player1移动动画
 	player1Move.reserve(3);
 	for (int i = 0; i < 3; i++) {
 		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i + 320, 0, 80, 81)));
 		player1Move.pushBack(frame);
 	}
-
 	//player1死亡动画
 	player1Dead.reserve(5);
 	for (int i = 0; i < 5; i++) {
 		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i, 243, 80, 81)));
 		player1Dead.pushBack(frame);
 	}
-
 	//player1被袭击动画
 	player1BeingAttacked.reserve(3);
 	for (int i = 0; i < 3; i++) {
 		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i + 240 , 400, 80, 81)));
 		player1BeingAttacked.pushBack(frame);
 	}
-
 	//player1发放气功动画
 	auto texture3 = Director::getInstance()->getTextureCache()->addImage("player1/firzen_1.png");
 	player1AttackQigong.reserve(3);
@@ -235,7 +221,6 @@ void FightMode::initAnimation() {
 		auto frame = SpriteFrame::createWithTexture(texture3, CC_RECT_PIXELS_TO_POINTS(Rect(79 * i, 162, 79, 81)));
 		player1AttackQigong.pushBack(frame);
 	}
-
 	//player1气功形状变化动画
 	auto texture4 = Director::getInstance()->getTextureCache()->addImage("player1/firzen_chasei.png");
 	player1Qigong.reserve(8);
@@ -248,13 +233,13 @@ void FightMode::initAnimation() {
 		auto frame = SpriteFrame::createWithTexture(texture4, CC_RECT_PIXELS_TO_POINTS(Rect(78 * k, j * 80, 78, 70)));
 		player1Qigong.pushBack(frame);
 	}
-
 	//player1防御动画
 	player1Defense.reserve(5);
 	for (int i = 0; i < 5; i++) {
 		auto frame = SpriteFrame::createWithTexture(texture3, CC_RECT_PIXELS_TO_POINTS(Rect(79 * i + 79 * 3, 0, 79, 81)));
 		player1Defense.pushBack(frame);
 	}
+
 
 	//player2手攻击动画
 	auto texture5 = Director::getInstance()->getTextureCache()->addImage("player2/woody_0.png");
@@ -270,28 +255,24 @@ void FightMode::initAnimation() {
 		auto frame = SpriteFrame::createWithTexture(texturePlayer2, CC_RECT_PIXELS_TO_POINTS(Rect(560 + 80 * i, 243, 80, 81)));
 		player2AttackLeg.pushBack(frame);
 	}
-
 	//player2移动动画
 	player2Move.reserve(4);
 	for (int i = 0; i < 4; i++) {
 		auto frame = SpriteFrame::createWithTexture(texture5, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i + 320, 0, 80, 81)));
 		player2Move.pushBack(frame);
 	}
-
 	//player2死亡动画
 	player2Dead.reserve(5);
 	for (int i = 0; i < 5; i++) {
 		auto frame = SpriteFrame::createWithTexture(texture5, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i, 243, 80, 81)));
 		player2Dead.pushBack(frame);
 	}
-
 	//player2被袭击动画
 	player2BeingAttacked.reserve(3);
 	for (int i = 0; i < 3; i++) {
 		auto frame = SpriteFrame::createWithTexture(texturePlayer2, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i , 400, 80, 81)));
 		player2BeingAttacked.pushBack(frame);
 	}
-
 	//player2发放气功动画
 	auto texture6 = Director::getInstance()->getTextureCache()->addImage("player2/woody_2.png");
 	player2AttackQigong.reserve(10);
@@ -299,7 +280,6 @@ void FightMode::initAnimation() {
 		auto frame = SpriteFrame::createWithTexture(texture6, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i, 0, 80, 81)));
 		player2AttackQigong.pushBack(frame);
 	}
-
 	//player2气功形状变化动画
 	auto texture7 = Director::getInstance()->getTextureCache()->addImage("player2/woody_ball.png");
 	player2Qigong.reserve(4);
@@ -307,7 +287,6 @@ void FightMode::initAnimation() {
 		auto frame = SpriteFrame::createWithTexture(texture7, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i, 162, 80, 81)));
 		player2Qigong.pushBack(frame);
 	}
-
 	//player2防御动画
 	player2Defense.reserve(3);
 	for (int i = 0; i < 3; i++) {
@@ -457,16 +436,26 @@ void FightMode::update(float f) {
 		}
 	}
 
-	//Mp补充
-	auto mp1 = Mp1->getPercentage();
+	////Mp补充
+	//auto mp1 = Mp1->getPercentage();
+	//mp1 += 1;
+	//auto mp1Action = ProgressTo::create(0.1, mp1);
+	//Mp1->runAction(mp1Action);
+
+	//auto mp2 = Mp2->getPercentage();
+	//mp2 += 1;
+	//auto mp2Action = ProgressTo::create(0.1, mp2);
+	//Mp2->runAction(mp2Action);
+
+	auto mp1 = MPpt1->getPercentage();
 	mp1 += 1;
 	auto mp1Action = ProgressTo::create(0.1, mp1);
-	Mp1->runAction(mp1Action);
+	MPpt2->runAction(mp1Action);
 
-	auto mp2 = Mp2->getPercentage();
+	auto mp2 = MPpt2->getPercentage();
 	mp2 += 1;
 	auto mp2Action = ProgressTo::create(0.1, mp2);
-	Mp2->runAction(mp2Action);
+	MPpt2->runAction(mp2Action);
 }
 
 //人物移动函数
@@ -755,7 +744,7 @@ void FightMode::player2Movement(char ADkey, char WSkey) {
 int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool player1_attack_1, bool player1_attack_2, bool player2_defence, bool player1_power, ProgressTimer* Hp2, ProgressTimer* Mp1) {
 	int flag = 0;
 	if (player1_numHit > 0) {
-		//人物1用拳+人物2未防御/人物1用脚/人物1用大招
+		//人物1用拳+人物2未防御人物1用脚/人物1用大招
 		if (player1_attack_1 && !player2_defence)
 			flag = 3;
 		else if (player1_attack_2)
@@ -798,10 +787,10 @@ int FightMode::power_attack(Sprite* player1, Sprite* player2, Sprite* qigong1, S
 
 //0.1秒内只能攻击一次，发气功一次
 void FightMode::update_numHit(float f) {
-	int flag1 = attack(player1, player2, player1_numHit, player1_attack_1, player1_attack_2, player2_defence, player1_power, Hp2, Mp1);
-	int flag2 = attack(player2, player1, player2_numHit, player2_attack_1, player2_attack_2, player1_defence, player2_power, Hp1, Mp2);
+	int flag1 = attack(player1, player2, player1_numHit, player1_attack_1, player1_attack_2, player2_defence, player1_power, HPpt2, MPpt1);
+	int flag2 = attack(player2, player1, player2_numHit, player2_attack_1, player2_attack_2, player1_defence, player2_power, HPpt1, MPpt2);
 	//执行人物1的动画
-	if (this->getChildByTag(01) == 0 && this->getChildByTag(03) == 0) {
+	if (player1->getNumberOfRunningActions() == 1) {
 		if (flag1 % 2 == 1) {
 			//拳打
 			auto animation1 = Animation::createWithSpriteFrames(player1AttackHand, 0.1f);
@@ -831,8 +820,9 @@ void FightMode::update_numHit(float f) {
 		}
 	}
 		
+
 	//执行人物2的动画
-	if (this->getChildByTag(02) == 0 && this->getChildByTag(04) == 0) {
+	if (player2->getNumberOfRunningActions() == 1) {
 		if (flag2 % 2 == 1) {
 			//拳打
 			auto animation1 = Animation::createWithSpriteFrames(player2AttackHand, 0.1f);
@@ -872,6 +862,7 @@ void FightMode::update_numHit(float f) {
 		player2AttackByQigong();
 	}
 }
+
 
 //监听气功与玩家的位置
 void FightMode::update_powerHit(float f) {
