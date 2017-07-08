@@ -120,6 +120,9 @@ private:
 
 	void addKeyboardListener();
 	Vec2 origin;
+
+	Menu * menu;//暂停菜单
+	int flag;//空格按次数
 };
 
 #endif // __FIGHTMODE_H__

@@ -1,6 +1,10 @@
 ﻿#include "FightMode.h"
 #include "SimpleAudioEngine.h"
+<<<<<<< HEAD
 #include "Gamepause.h"
+=======
+#include "MenuSence.h"
+>>>>>>> 5b7a4ca5ad720e0fefbeeede6a3901b08b01d83c
 using namespace CocosDenshion;
 
 USING_NS_CC;
@@ -60,8 +64,9 @@ bool FightMode::init()
 	this->addChild(pauseMenu, 1);
 
 	initAnimation();
-	//preloadMusic();
-	//playBgm();
+	preloadMusic();
+	playBgm();
+	flag = 0;
 	addKeyboardListener();
 	addCustomListener();
 	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
@@ -509,23 +514,30 @@ void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 		player1WSIsMove = true;
 		player1WSMovekey = 'S';
 		break;
-
-
+	case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
+		if (flag == 0) {
+			flag = 1;
+			pause();
+		}
+		break;
 
 	//zzh
 	case EventKeyboard::KeyCode::KEY_J:
 		player1_numHit++;
 		player1_attack_1 = true;
+		SimpleAudioEngine::getInstance()->playEffect("music/player1/hand.wav", false);
 		break;
 	case EventKeyboard::KeyCode::KEY_K:
 		player1_numHit++;
 		player1_attack_2 = true;
+		SimpleAudioEngine::getInstance()->playEffect("music/player1/leg.wav", false);
 		break;
 	case EventKeyboard::KeyCode::KEY_L:
 		player1_defence = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_I:
 		player1_power = true;
+		SimpleAudioEngine::getInstance()->playEffect("music/player1/qigong.wav", false);
 		break;
 	}
 }
@@ -650,16 +662,20 @@ void FightMode::onKeyPressed2(EventKeyboard::KeyCode code, Event* event) {
 	case EventKeyboard::KeyCode::KEY_1:
 		player2_numHit++;
 		player2_attack_1 = true;
+		SimpleAudioEngine::getInstance()->playEffect("music/player2/hand.wav", false);
+
 		break;
 	case EventKeyboard::KeyCode::KEY_2:
 		player2_numHit++;
 		player2_attack_2 = true;
+		SimpleAudioEngine::getInstance()->playEffect("music/player2/leg.wav", false);
 		break;
 	case EventKeyboard::KeyCode::KEY_3:
 		player2_defence = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_5:
 		player2_power = true;
+		SimpleAudioEngine::getInstance()->playEffect("music/player2/qigong.wav", false);
 		break;
 	}
 }
@@ -828,6 +844,7 @@ int FightMode::attack(Sprite* player1, Sprite* player2, int player1_numHit, bool
 }
 //公有执行攻击函数
 void FightMode::player_attack(Sprite* player, Vector<SpriteFrame*> player_action_1, Vector<SpriteFrame*> player_action_2) {
+	SimpleAudioEngine::getInstance()->playEffect("music/BeingAttack.wav", false);
 	auto animation1 = Animation::createWithSpriteFrames(player_action_1, 0.1f);
 	auto animate1 = Animate::create(animation1);
 	auto animation2 = Animation::createWithSpriteFrames(player_action_2, 0.1f);
@@ -908,21 +925,6 @@ void FightMode::player_dead(Sprite* player, char lastkey, Vector<SpriteFrame*> p
 
 
 
-//1.0秒内只能发一次大招
-void FightMode::update_powerHit(float f) {
-	//power_attack(player1, player2, qigong1, qigong2, player1_power, player2_defence, Hp2, Mp1);
-}
-int FightMode::power_attack(Sprite* player1, Sprite* player2, Sprite* qigong1, Sprite* qigong2, bool player1_power, bool player2_defence, ProgressTimer* Hp2, ProgressTimer* Mp1) {
-	int flag = 0;
-
-	if (player1_power) {
-		flag = 1;
-
-	}
-
-	return flag;
-}
-
 // 添加自定义监听器
 void FightMode::addCustomListener() {
 	auto dispatcher = Director::getInstance()->getEventDispatcher();
@@ -941,6 +943,7 @@ void FightMode::meet(EventCustom * event) {
 				auto fadeout = FadeOut::create(0.01f);
 				(*i)->runAction(fadeout);
 				i = player1QiGongNumber.erase(i);
+				SimpleAudioEngine::getInstance()->playEffect("music/BeingAttack.wav", false);
 			}
 			else {
 				i++;
@@ -975,28 +978,32 @@ void FightMode::meet(EventCustom * event) {
 }
 
 void FightMode::pause() {
-	//auto labelReturnGame = Label::createWithSystemFont("Return Game", "Marker Felt", 80);
-	//auto labelReStart = Label::createWithSystemFont("ReStart", "Marker Felt", 80);
-	//auto labelReturnMenu = Label::createWithSystemFont("Return Menu", "Marker Felt", 80);
-	//auto menuItem1 = MenuItemLabel::create(labelReturnGame, CC_CALLBACK_1(FightMode::returnGameCallback, this));
-	//auto menuItem2 = MenuItemLabel::create(labelReStart, CC_CALLBACK_1(FightMode::reStartCallback, this));
-	//auto menuItem3 = MenuItemLabel::create(labelReturnMenu, CC_CALLBACK_1(FightMode::returnMenuCallback, this));
-	//menuItem1->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 3 / 5);
-	//menuItem2->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 2 / 5);
-	//menuItem3->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 1 / 5);
-	//auto menu = Menu::create(menuItem1,menuItem2, menuItem3, NULL);
-	//menu->setPosition((Vec2::ZERO));
-	//this->addChild(menu, 3);
-	//CCDirector::getInstance()->pause();
+	auto labelReturnGame = Label::createWithSystemFont("Return Game", "Marker Felt", 80);
+	auto labelReStart = Label::createWithSystemFont("ReStart", "Marker Felt", 80);
+	auto labelReturnMenu = Label::createWithSystemFont("Return Menu", "Marker Felt", 80);
+	auto menuItem1 = MenuItemLabel::create(labelReturnGame, CC_CALLBACK_1(FightMode::returnGameCallback, this));
+	auto menuItem2 = MenuItemLabel::create(labelReStart, CC_CALLBACK_1(FightMode::reStartCallback, this));
+	auto menuItem3 = MenuItemLabel::create(labelReturnMenu, CC_CALLBACK_1(FightMode::returnMenuCallback, this));
+	menuItem1->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 3 / 5);
+	menuItem2->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 2 / 5);
+	menuItem3->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 1 / 5);
+	menu = Menu::create(menuItem1,menuItem2, menuItem3, NULL);
+	menu->setPosition((Vec2::ZERO));
+	this->addChild(menu, 3);
+	CCDirector::getInstance()->pause();
 	//CCActionManage
 }
 
 void FightMode::returnGameCallback(Ref* pSender) {
-
+	flag = 0;
+	this->removeChild(menu);
+	CCDirector::getInstance()->resume();
 }
 void FightMode::reStartCallback(Ref* pSender) {
-
+	auto fightMode = FightMode::createScene();
+	Director::getInstance()->replaceScene(TransitionSlideInT::create(1, fightMode));
 }
 void FightMode::returnMenuCallback(Ref* pSender) {
-
+	auto menuSence = MenuSence::createScene();
+	Director::getInstance()->replaceScene(TransitionSlideInT::create(1, menuSence));
 }
