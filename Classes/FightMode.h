@@ -94,8 +94,9 @@ private:
 	//控制人物动作特定函数
 	void update_numHit(float f);
 	void update_maxHit(float f);
+	void update_powerHit(float f);
 	int attack(Sprite*, Sprite*, int, bool, bool, bool, bool, ProgressTimer*, ProgressTimer*);
-	int power_attack();
+	int power_attack(Sprite*, Sprite*, Sprite*, Sprite*, bool, bool, ProgressTimer*, ProgressTimer*);
 	//人物操作相关变量
 	int player1_maxHit = 0;
 	int player1_numHit = 0;
