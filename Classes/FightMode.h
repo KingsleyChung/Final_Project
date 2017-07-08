@@ -36,9 +36,8 @@ private:
 	void update(float f);
 	int x_num;
 	int y_num;
-	//player1动画
+	//palyer1动画
 	Sprite * player1;
-	Sprite * qigong1;
 	Vector<SpriteFrame*> player1Idle;
 	Vector<SpriteFrame*> player1AttackHand;
 	Vector<SpriteFrame*> player1AttackLeg;
@@ -47,11 +46,9 @@ private:
 	Vector<SpriteFrame*> player1Dead;
 	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player1Defense;
-	bool player1IsDefend;
 
 	//palyer2动画
 	Sprite * player2;
-	Sprite * qigong2;
 	Vector<SpriteFrame*> player2Idle;
 	Vector<SpriteFrame*> player2AttackHand;
 	Vector<SpriteFrame*> player2AttackLeg;
@@ -60,7 +57,6 @@ private:
 	Vector<SpriteFrame*> player2Dead;
 	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player2Defense;
-	bool player2IsDefend;
 
 	//人物移动相关变量
 	char player1ADMovekey;
@@ -80,33 +76,6 @@ private:
 	void player2Movement(char ADkey, char WSkey);
 	void onKeyPressed2(EventKeyboard::KeyCode code, Event* event);
 	void onKeyReleased2(EventKeyboard::KeyCode code, Event *event);
-
-
-	//控制人物动作特定函数
-	void update_numHit(float f);
-	void update_maxHit(float f);
-	int attack(Sprite*, Sprite*, int, bool, bool, bool, bool, ProgressTimer*, ProgressTimer*);
-	int power_attack();
-	//人物操作相关变量
-	int player1_maxHit = 0;
-	int player1_numHit = 0;
-	bool player1_attack_1 = false;
-	bool player1_attack_2 = false;
-	bool player1_defence = false;
-	bool player1_power = false;
-	cocos2d::ProgressTimer* Hp1;
-	cocos2d::ProgressTimer* Mp1;
-	void player1_dead();
-
-	int player2_maxHit = 0;
-	int player2_numHit = 0;
-	bool player2_attack_1 = false;
-	bool player2_attack_2 = false;
-	bool player2_defence = false;
-	bool player2_power = false;
-	cocos2d::ProgressTimer* Hp2;
-	cocos2d::ProgressTimer* Mp2;
-	void player2_dead();
 
 	void addKeyboardListener();
 	Vec2 origin;
