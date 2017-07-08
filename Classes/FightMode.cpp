@@ -47,6 +47,73 @@ bool FightMode::init()
 	bg->setScaleY(visibleSize.height / bgy);
 	this->addChild(bg, 0);
 
+	//hp条
+	Sprite* HPMP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(7, 14, 1414, 275)));
+	Sprite* HP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 57, 24, 41)));
+	Sprite* MP1 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 184, 24, 41)));
+	Sprite* HPMP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(7, 293, 1414, 275)));
+	Sprite* HP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 57, 24, 41)));
+	Sprite* MP2 = Sprite::create("HPMP.png", CC_RECT_PIXELS_TO_POINTS(Rect(1480, 184, 24, 41)));
+
+	//使用hp条设置progressBar
+	HPpt1 = ProgressTimer::create(HP1);
+	HPpt1->setScale(0.25);
+	HPpt1->setScaleX(11.7);
+	HPpt1->setAnchorPoint(Vec2(0, 0));
+	HPpt1->setType(ProgressTimerType::BAR);
+	HPpt1->setBarChangeRate(Point(1, 0));
+	HPpt1->setMidpoint(Point(0, 1));
+	HPpt1->setPercentage(100);
+	HPpt1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width + 237 * 0.23 + 1, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.134));
+	addChild(HPpt1, 1);
+	MPpt1 = ProgressTimer::create(MP1);
+	MPpt1->setScale(0.25);
+	MPpt1->setScaleX(11.7);
+	MPpt1->setAnchorPoint(Vec2(0, 0));
+	MPpt1->setType(ProgressTimerType::BAR);
+	MPpt1->setBarChangeRate(Point(1, 0));
+	MPpt1->setMidpoint(Point(0, 1));
+	MPpt1->setPercentage(100);
+	MPpt1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width + 237 * 0.23 + 1, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.24));
+	addChild(MPpt1, 1);
+
+	HPMP1->setAnchorPoint(Vec2(0, 0));
+	HPMP1->setPosition(Vec2(origin.x + HPpt1->getContentSize().width * 0.5, origin.y + visibleSize.height - HPMP1->getContentSize().height * 0.3));
+	HPMP1->setScale(0.25);
+	addChild(HPMP1, 0);
+
+
+	HPpt2 = ProgressTimer::create(HP2);
+	HPpt2->setScale(0.25);
+	HPpt2->setScaleX(11.7);
+	HPpt2->setAnchorPoint(Vec2(0, 0));
+	HPpt2->setType(ProgressTimerType::BAR);
+	HPpt2->setBarChangeRate(Point(1, 0));
+	HPpt2->setMidpoint(Point(1, 0));
+	HPpt2->setPercentage(100);
+	HPpt2->setPosition(Vec2(visibleSize.width - (HPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.134));
+	addChild(HPpt2, 1);
+	MPpt2 = ProgressTimer::create(MP2);
+	MPpt2->setScale(0.25);
+	MPpt2->setScaleX(11.7);
+	MPpt2->setAnchorPoint(Vec2(0, 0));
+	MPpt2->setType(ProgressTimerType::BAR);
+	MPpt2->setBarChangeRate(Point(0, 1));
+	MPpt2->setMidpoint(Point(0, 1));
+	MPpt2->setPercentage(100);
+	MPpt2->setPosition(Vec2(visibleSize.width - (MPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.24));
+	addChild(MPpt2, 1);
+
+	HPMP2->setAnchorPoint(Vec2(0, 0));
+	HPMP2->setPosition(Vec2(visibleSize.width - (origin.x + HPpt1->getContentSize().width + HPMP2->getContentSize().width * 0.24) + 4, origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.3));
+	HPMP2->setScale(0.25);
+	addChild(HPMP2, 0);
+
+	/*auto hp = HPpt2->getPercentage();
+	hp = (hp - 10 >= 0) ? hp - 10 : 0;
+	CCProgressTo *progress = CCProgressTo::create(2, hp);
+	HPpt2->runAction(progress);*///把这段代码加入需要出发增加减少血量的地方
+
 	initAnimation();
 	addKeyboardListener();
 	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);

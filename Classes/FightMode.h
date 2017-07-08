@@ -36,6 +36,7 @@ private:
 	void update(float f);
 	int x_num;
 	int y_num;
+
 	//palyer1动画
 	Sprite * player1;
 	Vector<SpriteFrame*> player1Idle;
@@ -46,6 +47,8 @@ private:
 	Vector<SpriteFrame*> player1Dead;
 	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player1Defense;
+	cocos2d::ProgressTimer* HPpt1;
+	cocos2d::ProgressTimer* MPpt1;
 
 	//palyer2动画
 	Sprite * player2;
@@ -57,6 +60,8 @@ private:
 	Vector<SpriteFrame*> player2Dead;
 	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player2Defense;
+	cocos2d::ProgressTimer* HPpt2;
+	cocos2d::ProgressTimer* MPpt2;
 
 	//人物移动相关变量
 	char player1ADMovekey;
