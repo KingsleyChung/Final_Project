@@ -485,7 +485,7 @@ void FightMode::update(float f) {
 	//zzh
 
 	//ÈËÎïdefence
-	/*if (player2_defence) {
+	if (player2_defence) {
 		if (player2IsDefend == false && player2->getNumberOfRunningActions() == 0) {
 			auto animation1 = Animation::createWithSpriteFrames(player2Defense, 0.1f);
 			auto animate1 = Animate::create(animation1);
@@ -494,10 +494,12 @@ void FightMode::update(float f) {
 		}
 	}
 	else {
-		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-		auto animate2 = Animate::create(animation2);
-		player2->runAction(Sequence::create(animate2, NULL));
-		player2IsDefend = false;
+		if (player2->getNumberOfRunningActions() == 0) {
+			auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
+			auto animate2 = Animate::create(animation2);
+			player2->runAction(Sequence::create(animate2, NULL));
+			player2IsDefend = false;
+		}
 	}
 
 	if (player1_defence) {
@@ -509,11 +511,13 @@ void FightMode::update(float f) {
 		}
 	}
 	else {
-		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-		auto animate2 = Animate::create(animation2);
-		player1->runAction(Sequence::create(animate2, NULL));
-		player1IsDefend = false;
-	}*/
+		if (player1->getNumberOfRunningActions() == 0) {
+			auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
+			auto animate2 = Animate::create(animation2);
+			player1->runAction(Sequence::create(animate2, NULL));
+			player1IsDefend = false;
+		}
+	}
 
 	//Mp²¹³ä
 	auto mp1 = Mp1->getPercentage();
