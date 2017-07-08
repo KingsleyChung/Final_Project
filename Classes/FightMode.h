@@ -45,6 +45,7 @@ private:
 	Vector<SpriteFrame*> player1AttackQigong;
 	Vector<SpriteFrame*> player1Move;
 	Vector<SpriteFrame*> player1Dead;
+	Vector<SpriteFrame*> player1BeingAttacked;
 	Vector<SpriteFrame*> player1Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player1Defense;
 	bool player1IsDefend;
@@ -58,6 +59,7 @@ private:
 	Vector<SpriteFrame*> player2AttackQigong;
 	Vector<SpriteFrame*> player2Move;
 	Vector<SpriteFrame*> player2Dead;
+	Vector<SpriteFrame*> player2BeingAttacked;
 	Vector<SpriteFrame*> player2Qigong;//气功形状变化动画
 	Vector<SpriteFrame*> player2Defense;
 	bool player2IsDefend;

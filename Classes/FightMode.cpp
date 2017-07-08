@@ -203,6 +203,13 @@ void FightMode::initAnimation() {
 		player1Dead.pushBack(frame);
 	}
 
+	//player1被袭击动画
+	player1BeingAttacked.reserve(3);
+	for (int i = 0; i < 3; i++) {
+		auto frame = SpriteFrame::createWithTexture(texture1, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i + 240 , 400, 80, 81)));
+		player1BeingAttacked.pushBack(frame);
+	}
+
 	//player1发放气功动画
 	auto texture3 = Director::getInstance()->getTextureCache()->addImage("player1/firzen_1.png");
 	player1AttackQigong.reserve(3);
@@ -239,10 +246,10 @@ void FightMode::initAnimation() {
 		player2AttackHand.pushBack(frame);
 	}
 	//player2脚攻击动画
-	auto textureleg = Director::getInstance()->getTextureCache()->addImage("player2/woody_1.png");
+	auto texturePlayer2 = Director::getInstance()->getTextureCache()->addImage("player2/woody_1.png");
 	player2AttackLeg.reserve(3);
 	for (int i = 0; i < 3; i++) {
-		auto frame = SpriteFrame::createWithTexture(textureleg, CC_RECT_PIXELS_TO_POINTS(Rect(560 + 80 * i, 243, 80, 81)));
+		auto frame = SpriteFrame::createWithTexture(texturePlayer2, CC_RECT_PIXELS_TO_POINTS(Rect(560 + 80 * i, 243, 80, 81)));
 		player2AttackLeg.pushBack(frame);
 	}
 
@@ -258,6 +265,13 @@ void FightMode::initAnimation() {
 	for (int i = 0; i < 5; i++) {
 		auto frame = SpriteFrame::createWithTexture(texture5, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i, 243, 80, 81)));
 		player2Dead.pushBack(frame);
+	}
+
+	//player2被袭击动画
+	player2BeingAttacked.reserve(3);
+	for (int i = 0; i < 3; i++) {
+		auto frame = SpriteFrame::createWithTexture(texturePlayer2, CC_RECT_PIXELS_TO_POINTS(Rect(80 * i , 400, 80, 81)));
+		player2BeingAttacked.pushBack(frame);
 	}
 
 	//player2发放气功动画
