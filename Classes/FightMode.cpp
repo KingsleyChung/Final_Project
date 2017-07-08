@@ -855,48 +855,44 @@ void FightMode::update_numHit(float f) {
 	int flag1 = attack(player1, player2, player1_numHit, player1_attack_1, player1_attack_2, player2_defence, player1_power, Hp2, Mp1);
 	int flag2 = attack(player2, player1, player2_numHit, player2_attack_1, player2_attack_2, player1_defence, player2_power, Hp1, Mp2);
 	//执行人物1的动画
-	if (player1->getNumberOfRunningActions() == 0) {
-		if (flag1 % 2 == 1) {
-			//拳打
-			auto animation1 = Animation::createWithSpriteFrames(player1AttackHand, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			player1->runAction(Sequence::create(animate1, animate2, NULL));
-		}
-		else if (flag1 % 2 == 0 && flag1) {
-			//脚踢
-			auto animation1 = Animation::createWithSpriteFrames(player1AttackLeg, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			player1->runAction(Sequence::create(animate1, animate2, NULL));
-		}
-		if (flag1 > 3)
-			player2_maxHit++;
+	if (flag1 % 2 == 1) {
+		//拳打
+		auto animation1 = Animation::createWithSpriteFrames(player1AttackHand, 0.1f);
+		auto animate1 = Animate::create(animation1);
+		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
+		auto animate2 = Animate::create(animation2);
+		player1->runAction(Sequence::create(animate1, animate2, NULL));
 	}
+	else if (flag1 % 2 == 0 && flag1) {
+		//脚踢
+		auto animation1 = Animation::createWithSpriteFrames(player1AttackLeg, 0.1f);
+		auto animate1 = Animate::create(animation1);
+		auto animation2 = Animation::createWithSpriteFrames(player1Idle, 0.1f);
+		auto animate2 = Animate::create(animation2);
+		player1->runAction(Sequence::create(animate1, animate2, NULL));
+	}
+	if (flag1 > 3)
+		player2_maxHit++;
 
 	//执行人物2的动画
-	if (player2->getNumberOfRunningActions() == 0) {
-		if (flag2 % 2 == 1) {
-			//拳打
-			auto animation1 = Animation::createWithSpriteFrames(player2AttackHand, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			player2->runAction(Sequence::create(animate1, animate2, NULL));
-		}
-		else if (flag2 % 2 == 0 && flag2) {
-			//脚踢
-			auto animation1 = Animation::createWithSpriteFrames(player2AttackLeg, 0.1f);
-			auto animate1 = Animate::create(animation1);
-			auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
-			auto animate2 = Animate::create(animation2);
-			player2->runAction(Sequence::create(animate1, animate2, NULL));
-		}
-		if (flag2 > 3)
-			player1_maxHit++;
+	if (flag2 % 2 == 1) {
+		//拳打
+		auto animation1 = Animation::createWithSpriteFrames(player2AttackHand, 0.1f);
+		auto animate1 = Animate::create(animation1);
+		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
+		auto animate2 = Animate::create(animation2);
+		player2->runAction(Sequence::create(animate1, animate2, NULL));
 	}
+	else if (flag2 % 2 == 0 && flag2) {
+		//脚踢
+		auto animation1 = Animation::createWithSpriteFrames(player2AttackLeg, 0.1f);
+		auto animate1 = Animate::create(animation1);
+		auto animation2 = Animation::createWithSpriteFrames(player2Idle, 0.1f);
+		auto animate2 = Animate::create(animation2);
+		player2->runAction(Sequence::create(animate1, animate2, NULL));
+	}
+	if (flag2 > 3)
+		player1_maxHit++;
 
 	player1_numHit = 0;
 	player2_numHit = 0;
@@ -920,8 +916,14 @@ void FightMode::update_maxHit(float f) {
 void FightMode::player1_dead() {
 	auto pos = player2->getPosition();
 	int dis = 0;
-	if (pos.x + 200 <= visibleSize.width)
-		dis = 200;
+	if (lastkey2 == 'A') {
+		if (pos.x - 200 >= 0)
+			dis = -200;
+	}
+	else {
+		if (pos.x + 200 <= visibleSize.width)
+			dis = 200;
+	}
 	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
 	auto animation1 = Animation::createWithSpriteFrames(player1Dead, 0.2f);
 	auto animate1 = Animate::create(animation1);
@@ -934,8 +936,14 @@ void FightMode::player1_dead() {
 void FightMode::player2_dead() {
 	auto pos = player2->getPosition();
 	int dis = 0;
-	if (pos.x + 200 <= visibleSize.width)
-		dis = 200;
+	if (lastkey1 == 'A') {
+		if (pos.x - 200 >= 0)
+			dis = -200;
+	}
+	else {
+		if (pos.x + 200 <= visibleSize.width)
+			dis = 200;
+	}
 	auto moveAnimation = MoveTo::create(0.5, Vec2(origin.x + pos.x + dis, origin.y + pos.y));
 	auto animation1 = Animation::createWithSpriteFrames(player2Dead, 0.2f);
 	auto animate1 = Animate::create(animation1);
