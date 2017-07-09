@@ -64,10 +64,9 @@ bool FightMode::init()
 	initAnimation();
 	preloadMusic();
 	playBgm();
-	flag = 0;
 	addKeyboardListener();
 	addCustomListener();
-	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 2);
+	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 1);
 	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_powerHit), 0.01f, kRepeatForever, 0);
@@ -186,7 +185,7 @@ void FightMode::initAnimation() {
 	HPpt2->setType(ProgressTimerType::BAR);
 	HPpt2->setBarChangeRate(Point(1, 0));
 	HPpt2->setMidpoint(Point(1, 0));
-	HPpt2->setPercentage(10);
+	HPpt2->setPercentage(100);
 	HPpt2->setPosition(Vec2(visibleSize.width - (HPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.134));
 	addChild(HPpt2, 1);
 	MPpt2 = ProgressTimer::create(MP2);
@@ -331,6 +330,7 @@ void FightMode::player1AttackByQigong() {
 	auto mpAction = ProgressTo::create(0.1, mp1);
 	MPpt1->runAction(mpAction);
 	SimpleAudioEngine::getInstance()->playEffect("music/player1/qigong.wav", false);
+	player1_power_cid = lastkey1;
 	auto callBack = CallFunc::create(CC_CALLBACK_0(FightMode::player1QiGong, this));
 	auto animation1 = Animation::createWithSpriteFrames(player1AttackQigong, 0.1f);
 	auto animate1 = Animate::create(animation1);
@@ -382,6 +382,7 @@ void FightMode::player2AttackByQigong() {
 	auto mpAction = ProgressTo::create(0.1, mp2);
 	MPpt2->runAction(mpAction);
 	SimpleAudioEngine::getInstance()->playEffect("music/player2/qigong.wav", false);
+	player2_power_cid = lastkey2;
 	auto callBack = CallFunc::create(CC_CALLBACK_0(FightMode::player2QiGong, this));
 	auto animation1 = Animation::createWithSpriteFrames(player2AttackQigong, 0.1f);
 	auto animate1 = Animate::create(animation1);
@@ -495,9 +496,11 @@ void FightMode::update(float f) {
 		renderTexture->end();
 
 		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+		Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+		unscheduleAllSelectors();
 		//得到窗口的大小
 		//将游戏界面暂停，压入场景堆栈。并切换到GameOver界面
-		Director::sharedDirector()->replaceScene(Gameover::createScene(renderTexture));
+		Director::sharedDirector()->pushScene(Gameover::createScene(renderTexture));
 	}
 
 }
@@ -545,12 +548,6 @@ void FightMode::onKeyPressed1(EventKeyboard::KeyCode code, Event* event) {
 	case cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_S:
 		player1WSIsMove = true;
 		player1WSMovekey = 'S';
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
-		if (flag == 0) {
-			flag = 1;
-			pause();
-		}
 		break;
 
 	//zzh
@@ -977,7 +974,7 @@ void FightMode::meet(EventCustom * event) {
 				}
 				else {
 					hp2 -= 5;
-					player_dead(player2, lastkey1, player2Dead, player2Idle);
+					player_dead(player2, player1_power_cid, player2Dead, player2Idle);
 				}
 				auto mpAction = ProgressTo::create(0.1, hp2);
 				HPpt2->runAction(mpAction);
@@ -1009,7 +1006,7 @@ void FightMode::meet(EventCustom * event) {
 				}
 				else {
 					hp1 -= 5;
-					player_dead(player1, lastkey2, player1Dead, player1Idle);
+					player_dead(player1, player2_power_cid, player1Dead, player1Idle);
 				}
 				auto mpAction = ProgressTo::create(0.1, hp1);
 				HPpt1->runAction(mpAction);

@@ -95,7 +95,6 @@ private:
 	void player_dead(Sprite*, char, Vector<SpriteFrame*>, Vector<SpriteFrame*>);
 	//大招攻击
 	void update_powerHit(float f);
-	int power_attack(Sprite*, Sprite*, Sprite*, Sprite*, bool, bool, ProgressTimer*, ProgressTimer*);
 	//人物操作相关变量
 	int player1_maxHit = 0;
 	int player1_numHit = 0;
@@ -103,6 +102,7 @@ private:
 	bool player1_attack_2 = false;
 	bool player1_defence = false;
 	bool player1_power = false;
+	char player1_power_cid;
 	cocos2d::ProgressTimer* HPpt1;
 	cocos2d::ProgressTimer* MPpt1;
 
@@ -112,14 +112,12 @@ private:
 	bool player2_attack_2 = false;
 	bool player2_defence = false;
 	bool player2_power = false;
+	char player2_power_cid;
 	cocos2d::ProgressTimer* HPpt2;
 	cocos2d::ProgressTimer* MPpt2;
 
 	void addKeyboardListener();
 	Vec2 origin;
-
-	Menu * menu;//暂停菜单
-	int flag;//空格按次�?
 };
 
 #endif // __FIGHTMODE_H__
