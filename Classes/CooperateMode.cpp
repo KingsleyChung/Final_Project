@@ -35,22 +35,6 @@ bool CooperateMode::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    /*auto bg = Sprite::create("level-background-0.jpg");
-    bg->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-    this->addChild(bg, 0);
-
-    auto label = Label::create("Shoot", "fonts/arial.ttf", 76);
-    auto menuItemLabel = MenuItemLabel::create(label, CC_CALLBACK_1(CooperateMode::shootCallback, this));
-    menuItemLabel->setPosition(Vec2(visibleSize.width + origin.x - 180, origin.y + 475));
-    auto menu = Menu::create(menuItemLabel, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    enermyLayer = Layer::create();
-    enermyLayer->ignoreAnchorPointForPosition(true);
-    enermyLayer->setPosition(Vec2(origin.x, visibleSize.height / 2 + origin.y));
-    this->addChild(enermyLayer);*/
-
     return true;
 }
 
