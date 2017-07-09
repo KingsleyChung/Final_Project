@@ -497,6 +497,11 @@ void FightMode::update(float f) {
 		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 		//得到窗口的大小
 		//将游戏界面暂停，压入场景堆栈。并切换到GameOver界面
+
+		//清空链表
+		player1QiGongNumber.clear();
+		player2QiGongNumber.clear();
+
 		Director::sharedDirector()->replaceScene(Gameover::createScene(renderTexture));
 	}
 
