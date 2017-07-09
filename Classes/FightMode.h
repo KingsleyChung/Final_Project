@@ -85,7 +85,6 @@ private:
 	void onKeyPressed2(EventKeyboard::KeyCode code, Event* event);
 	void onKeyReleased2(EventKeyboard::KeyCode code, Event *event);
 
-
 	//控制人物动作特定函数
 	//普通攻击
 	void update_numHit(float f);

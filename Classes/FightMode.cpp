@@ -1,6 +1,7 @@
 ﻿#include "FightMode.h"
 #include "SimpleAudioEngine.h"
 #include "Gamepause.h"
+#include "Gameover.h"
 #include "MenuSence.h"
 using namespace CocosDenshion;
 
@@ -66,7 +67,7 @@ bool FightMode::init()
 	flag = 0;
 	addKeyboardListener();
 	addCustomListener();
-	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 0);
+	schedule(schedule_selector(FightMode::update), 0.1f, kRepeatForever, 2);
 	schedule(schedule_selector(FightMode::update_numHit), 0.1f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_maxHit), 1.0f, kRepeatForever, 0);
 	schedule(schedule_selector(FightMode::update_powerHit), 0.01f, kRepeatForever, 0);
@@ -185,7 +186,7 @@ void FightMode::initAnimation() {
 	HPpt2->setType(ProgressTimerType::BAR);
 	HPpt2->setBarChangeRate(Point(1, 0));
 	HPpt2->setMidpoint(Point(1, 0));
-	HPpt2->setPercentage(100);
+	HPpt2->setPercentage(10);
 	HPpt2->setPosition(Vec2(visibleSize.width - (HPpt2->getContentSize().width * 14.56), origin.y + visibleSize.height - HPMP2->getContentSize().height * 0.134));
 	addChild(HPpt2, 1);
 	MPpt2 = ProgressTimer::create(MP2);
@@ -483,6 +484,22 @@ void FightMode::update(float f) {
 	mp2 += 0.1;
 	auto mp2Action = ProgressTo::create(0.1, mp2);
 	MPpt2->runAction(mp2Action);
+
+	if (HPpt1->getPercentage() == 0 || HPpt2->getPercentage() == 0) {
+		RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
+
+		//遍历当前类的所有子节点信息，画入renderTexture中。
+		//这里类似截图。
+		renderTexture->begin();
+		this->getParent()->visit();
+		renderTexture->end();
+
+		SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+		//得到窗口的大小
+		//将游戏界面暂停，压入场景堆栈。并切换到GameOver界面
+		Director::sharedDirector()->replaceScene(Gameover::createScene(renderTexture));
+	}
+
 }
 
 //人物移动函数

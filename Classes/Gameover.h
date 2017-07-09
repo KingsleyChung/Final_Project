@@ -1,16 +1,14 @@
-#ifndef __GAMEPAUSE__H__
-#define __GAMEPAUSE__H__
+#ifndef __GAMEOVER__H__
+#define __GAMEOVER__H__
 #include "cocos2d.h"
 USING_NS_CC;
-class Gamepause : public cocos2d::Layer
+class Gameover : public cocos2d::Layer
 {
 public:
 	static cocos2d::Scene* createScene(RenderTexture* sqr);
 
     virtual bool init();
-    CREATE_FUNC(Gamepause);
-	//继续游戏
-	void menuContinueCallback(Object* pSender);
+    CREATE_FUNC(Gameover);
 	//重新开始游戏
 	void menuRestart(Object* pSender);
 	//回主界面
@@ -19,4 +17,4 @@ private:
 
 };
 
-#endif // __GAMEPAUSE__H__
+#endif // __GAMEOVER__H__

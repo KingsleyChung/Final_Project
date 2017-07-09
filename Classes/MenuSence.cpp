@@ -59,7 +59,7 @@ bool MenuSence::init()
 
 void MenuSence::enterFightModeCallback(Ref* pSender) {
 	auto fightMode = FightMode::createScene();
-	Director::getInstance()->replaceScene(TransitionSlideInT::create(1, fightMode));
+	Director::getInstance()->replaceScene(TransitionSlideInT::create(0.5, fightMode));
 }
 
 void MenuSence::menuCloseCallback(Ref* pSender)
